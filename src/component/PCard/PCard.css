@@ -1,0 +1,92 @@
+.pcard-container {
+  background-color: white;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  border-radius: 1rem;
+  width: 100%;
+  padding: 15px;
+  box-sizing: border-box;
+  max-height: 100%;
+  overflow: hidden;
+}
+.pcard-container.review{
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+}
+.pcard-container.review .pcard-header {
+  border-bottom: 1px solid #C6C7C8;
+}
+.pcard-container.review .pcard-content .pcard-container {
+    border-radius:0;
+    box-shadow: none;}
+.pcard-container.review .pcard-content .pcard-container .pcard-header{ 
+  border: 0 !important;
+  padding:10px 12px;
+}
+.pcard-container.review .pcard-title{
+  color: #000000 !important;
+  font-weight: normal;
+  font-size: 28px;
+}
+.pcard-container.review .pcard-side.pcard-back-button-wrapper button{
+  font-size: 16px;
+  font-weight: normal;
+}
+/* Header */
+.pcard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-right: 13px;
+  margin-left: -26px;
+}
+/* Title */
+.pcard-title {
+  flex-grow: 1;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0;
+  text-align: left; 
+}
+/* Header right side */
+.pcard-side {
+  width: 48px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+/* Back button */
+.pcard-back-button-wrapper {
+  width: 48px;
+}
+
+.pcard-back-button {
+  padding: 8px;
+}
+/* Content styling */
+.pcard-content {
+  color: #4a5568;
+  width: 100%;
+  overflow: hidden; /* ✅ Prevent scroll inside content too */
+}
+/* 🔽 Responsive adjustments */
+@media (max-width: 768px) {
+  .pcard-container {
+    padding: 12px;
+  }
+  .pcard-title {
+    font-size: 1.25rem;
+  }
+  .pcard-side {
+    width: 40px;
+  }
+}
+@media (max-width: 480px) {
+  .pcard-title {
+    font-size: 1.1rem;
+  }
+  .pcard-side {
+    width: 36px;
+  }
+}
