@@ -78,7 +78,7 @@ const EnquirySuccess = () => {
         });
     };
 
-    const columnWidths = [2, 2, 2, 2, 4];
+    const columnWidths = [2, 3, 2, 2, 3];
 
     return (
 
@@ -120,8 +120,7 @@ const EnquirySuccess = () => {
                         
                         {data.map((item, index) => (
                             <React.Fragment key={index}>
-                                <PGrid item xs={12} sm={6} md={columnWidths[index]}
-                                >
+                                <PGrid item xs={12} sm={6} md={columnWidths[index]}>
                                     <PTypography
                                         labelText={item.label}
                                         weight={FontWeight.bold}

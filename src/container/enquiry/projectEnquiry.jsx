@@ -456,7 +456,15 @@ const ProjectEnquiry = () => {
 
     const handleCalculate = async (e, flag) => {
         if (flag == "reCalculate") {
-            await fetchData();
+            const response = await PostApi(ProjectEnquiry_API.UpdateJobStatus, {
+                enqId: id,
+                modifiedBy: fkID,
+                status: 2
+            });
+            if (isSuccess(response)) {
+                toast(Labels.status.success, response.data);
+                await fetchData();
+            }
         }
         else {
             const payload = {
@@ -738,8 +746,14 @@ const ProjectEnquiry = () => {
                     status: flag
                 });
                 if (isSuccess(response)) {
-                    await fetchData();
                     toast(Labels.status.success, response.data);
+                    await fetchData();
+                    if (flag == 4) {
+                        setFormData(prev => ({
+                            ...prev,
+                            activeTab: "RFQ",
+                        }))
+                    }
                 }
             }
             else {
@@ -1953,13 +1967,7 @@ const ProjectEnquiry = () => {
                                                 color={CommonColors.dark_blue}
                                                 onClick={(e) => handleQuotation(e, 3)}
                                                 width={320}
-                                                startIcon={
-                                                    <img
-                                                        src={arrow}
-                                                        alt="arrow"
-                                                        className="icon"
-                                                    />
-                                                }
+                                                startIcon={<img src={arrow} alt="arrow" className="icon" />}
                                             />
                                         </PGrid>
                                     </div>
@@ -1995,7 +2003,6 @@ const ProjectEnquiry = () => {
                                                 variant="outlined"
                                                 onClick={(e) => handleQuotation(e, 6)}
                                                 width={250}
-
                                             />
                                             <PButton
                                                 label={getLabel("lbl246")}

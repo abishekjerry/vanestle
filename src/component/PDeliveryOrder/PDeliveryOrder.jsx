@@ -80,21 +80,23 @@ const PDeliveryOrder = (props) => {
             const response = await PostApi(ProjectEnquiry_API.CheckDeliveryAddress, {
                 CompanyName: formData.companyName
             });
-            if (isSuccess(response.status)) {
-                setFormData({
-                    companyName: response.data.companyName,
-                    addressLineOne: response.data.adressLine1,
-                    addressLineTwo: response.data.adressLine2,
-                    addressLineThree: response.data.adressLine3,
-                    nameorDept: response.data.nameorDept,
-                    contactNo: response.data.contactNo,
-                    remarks: response.data.remarks,
+            const data = response.data;
+            if (isSuccess(response)) {
+                setFormData((prev) => ({
+                    ...prev,
+                    companyName: data.companyName ?? "",
+                    addressLineOne: data.adressLine1 ?? "",
+                    addressLineTwo: data.adressLine2 ?? "",
+                    addressLineThree: data.adressLine3 ?? "",
+                    nameorDept: data.nameorDept ?? "",
+                    contactNo: data.contactNo ?? "",
+                    remarks: data.remarks ?? "",
                     id: 0
-                });
-                toast(Labels.status.success, response.data);
+                }));
             }
             else {
-                setFormData({
+                setFormData((prev) => ({
+                    ...prev,
                     companyName: formData.companyName,
                     addressLineOne: "",
                     addressLineTwo: "",
@@ -103,11 +105,12 @@ const PDeliveryOrder = (props) => {
                     contactNo: "",
                     remarks: "",
                     id: 0
-                });
-                toast(Labels.status.success, response.data);
+                }));
+                toast(Labels.status.success, data);
             }
 
         } catch (error) {
+            console.error(error);
             toast(Labels.status.failure, Labels.message.somethingWentWrong);
         } finally {
             setLoading(false);

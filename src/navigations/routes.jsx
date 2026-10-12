@@ -1,22 +1,14 @@
 import React, { Suspense, lazy } from "react";
-import { Routes, Route, Navigate , Outlet } from "react-router-dom";
+import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import PageLayout from "../container/layout/pageLayout";
 import { labelRoutes } from "./labelRoutes";
 import PageNotFound from "../container/pageNotFound/pageNotFound";
 import { useSelector } from "react-redux";
 
-// const UserRoute = () => {
-//   const verifiedUser = useSelector((state) => state.userDetails.user);
-//   return verifiedUser?.UserName ? <Outlet /> : <Navigate to={labelRoutes.home} replace />;
-//   //return <Navigate to={labelRoutes.home} replace />;
-// };
 const UserRoute = () => {
   const verifiedUser = useSelector((state) => state.userDetails.user);
   return verifiedUser?.userName ? <Outlet /> : <Navigate to={labelRoutes.home} replace />;
-  //return <Navigate to={labelRoutes.home} replace />;
 };
-
-
 
 const LoginPage = lazy(() => import("../container/login/login"));
 const Dashboard = lazy(() => import("../container/dashboard/dashboard"));
@@ -38,7 +30,7 @@ function AppRoutes() {
         <Route path={labelRoutes.home} element={<LoginPage />} />
 
         {/* Layout Pages */}
-        {/* <Route element={<UserRoute />}> */}
+        <Route element={<UserRoute />}>
           <Route element={<PageLayout />}>
             <Route path={labelRoutes.dashboard} element={<Dashboard />} />
             <Route path={labelRoutes.eqDashboard} element={<EqDashboard />} />
@@ -51,7 +43,7 @@ function AppRoutes() {
             <Route path={labelRoutes.enquirySuceess} element={<EnquirySuccess />} />
             <Route path={labelRoutes.projectEnquiry} element={<ProjectEnquiry />} />
           </Route>
-        {/* </Route> */}
+        </Route>
 
         {/* Page Not Found */}
         <Route path={labelRoutes.PageNotFound} element={<PageNotFound />} />

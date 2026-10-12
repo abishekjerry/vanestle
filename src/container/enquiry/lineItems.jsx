@@ -610,7 +610,7 @@ const LineItems = () => {
         setPreviewOpen(true);
     };
 
-    const handleCancel = () => {
+    const handleCancel = async () => { 
         setFormData((prev) => ({
             ...prev,
             category: "",
@@ -665,6 +665,7 @@ const LineItems = () => {
             depth: "",
             files: []
         }))
+        setErrors({});
     }
 
 
