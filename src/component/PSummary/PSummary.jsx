@@ -16,24 +16,23 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { isSuccess, toast } from "../../utils/commonFunction/common";
 import { LineItems_API } from "../../utils/api/apiUrl";
 import { PostApi } from "../../utils/api/networking";
+import { useSelector } from "react-redux";
 
-export const PSummary = ({ sections = [], currentStep = 3, refreshSummary,layout="row", duplicate = false, showFlag = true , lineItems = [] }) => {
+export const PSummary = ({ sections = [], currentStep = 3, refreshSummary, layout = "row", duplicate = false, showFlag = true, lineItems = [] }) => {
     const { state } = useLocation();
     const navigate = useNavigate();
     const [activeStep, setActiveStep] = useState(currentStep);
     const [activeItemIndex, setActiveItemIndex] = useState({ 3: 0 });
     const [open, setOpen] = useState(false);
     const [formData, setFormData] = useState({});
-    const enquiryID = localStorage.getItem("enquiryID")
+    const { userType, enquiryID, fkID } = useSelector((state) => state.userDetails.user);
+    const flag = userType?.toLowerCase() === Labels.userType.agency
     const handleOpen = (data = {}) => {
         setFormData(data);
         setOpen(true);
     };
-    //console.log(currentStep)
-    const visibleSections = sections.filter(
-        // (section) => section.step <= currentStep
-        (section) => section.step === currentStep
-    );
+
+    const visibleSections = sections.filter((section) => section.step == currentStep);
 
     const handleEdit = (step, enquiryId = null) => {
         const data = lineItems.find(item => item.enqdetailsId === enquiryId);
@@ -52,7 +51,7 @@ export const PSummary = ({ sections = [], currentStep = 3, refreshSummary,layout
         });
     };
     const SummaryItem = ({ label, value, layout }) => (
-        
+
         <PGrid container className={Labels.margin.mb2}>
             {label === "" ? (
                 <PGrid item xs={12} sm={12} md={12}>
@@ -66,21 +65,21 @@ export const PSummary = ({ sections = [], currentStep = 3, refreshSummary,layout
                     {layout === 'row' && (
                         <PGrid item xs={12} sm={12} md={12}>
                             <PTypography labelText={label} weight={FontWeight.bold}
-                            flag={Labels.fontFlags.smallText} />
+                                flag={Labels.fontFlags.smallText} />
                             <PTypography
                                 flag={Labels.fontFlags.smallText}
                                 labelText={value || "-"}
                                 weight={FontWeight.regular}
                             />
-                        </PGrid> 
+                        </PGrid>
                     )}
                     {layout === 'column' && (
                         <>
                             <PGrid item xs={12} sm={12} md={6}>
-                                <PTypography labelText={label} 
-                                weight={FontWeight.bold}
-                                flag={Labels.fontFlags.normalText}                           />
-                            </PGrid> 
+                                <PTypography labelText={label}
+                                    weight={FontWeight.bold}
+                                    flag={Labels.fontFlags.normalText} />
+                            </PGrid>
                             <PGrid item xs={12} sm={12} md={6}>
                                 <PTypography
                                     flag={Labels.fontFlags.normalText}
@@ -90,8 +89,8 @@ export const PSummary = ({ sections = [], currentStep = 3, refreshSummary,layout
                             </PGrid>
                         </>
                     )}
-                    
-                    
+
+
                 </>
             )}
         </PGrid>
@@ -102,7 +101,7 @@ export const PSummary = ({ sections = [], currentStep = 3, refreshSummary,layout
             const payload = {
                 EnqdetailsId: data.enquiryId,
                 EnqId: state.id,
-                modifiedBy: parseInt(localStorage.getItem("agancyUserID")),
+                modifiedBy: fkID,
             };
             const response = await PostApi(LineItems_API.GetEnqDuplicate, payload);
             if (isSuccess(response)) {
@@ -144,33 +143,33 @@ export const PSummary = ({ sections = [], currentStep = 3, refreshSummary,layout
                     return (
                         <Fragment key={section.step}>
                             {layout === 'row' && <>
-                                    <PGrid container className="d-flex align-items-center justify-content-between"
-                                        style={{ cursor: "pointer" }}
-                                        onClick={() => {
-                                            const newStep = isOpen ? null : section.step;
-                                            setActiveStep(newStep);
-                                            if (newStep === 3) {
-                                                setActiveItemIndex({ 3: 0 });
-                                            } else {
-                                                setActiveItemIndex({});
-                                            }
-                                        }}
-                                    >
-                                        <PGrid item xs={12} sm={6} md={8}>
-                                            <PTypography
-                                                labelText={`${section.title}${[3, 4].includes(section.step) ? `(${section.items?.length || 0})` : ""}`}
-                                                flag={Labels.fontFlags.errorLbl}
-                                                weight={FontWeight.bold}
-                                            />
-                                        </PGrid>
-
-                                        <PGrid item xs={12} sm={6} md={4} className="d-flex justify-content-end align-items-center">
-                                            {isOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                                        </PGrid>
+                                <PGrid container className="d-flex align-items-center justify-content-between"
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() => {
+                                        const newStep = isOpen ? null : section.step;
+                                        setActiveStep(newStep);
+                                        if (newStep === 3) {
+                                            setActiveItemIndex({ 3: 0 });
+                                        } else {
+                                            setActiveItemIndex({});
+                                        }
+                                    }}
+                                >
+                                    <PGrid item xs={12} sm={6} md={8}>
+                                        <PTypography
+                                            labelText={`${section.title}${[3, 4].includes(section.step) ? `(${section.items?.length || 0})` : ""}`}
+                                            flag={Labels.fontFlags.errorLbl}
+                                            weight={FontWeight.bold}
+                                        />
                                     </PGrid>
-                                    <hr className="mb-3 mt-1" />
-                                </>
-                                
+
+                                    <PGrid item xs={12} sm={6} md={4} className="d-flex justify-content-end align-items-center">
+                                        {isOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                                    </PGrid>
+                                </PGrid>
+                                <hr className="mb-3 mt-1" />
+                            </>
+
                             }
 
                             {/* CONTENT */}
@@ -181,7 +180,7 @@ export const PSummary = ({ sections = [], currentStep = 3, refreshSummary,layout
                                             const isItemOpen = activeItemIndex[3] === i;
                                             return (
                                                 <Fragment key={i}>
-                                                    { i !=0 && <hr className="mb-3 mt-1" />}
+                                                    {i != 0 && <hr className="mb-3 mt-1" />}
                                                     <PGrid container className="w-100 d-flex align-items-center justify-content-between pb-2"
                                                         style={{ cursor: "pointer" }}
                                                         onClick={() => setActiveItemIndex((prev) => ({ ...prev, 3: prev[3] === i ? null : i }))}
@@ -200,7 +199,7 @@ export const PSummary = ({ sections = [], currentStep = 3, refreshSummary,layout
                                                     </PGrid>
                                                     {isItemOpen && (
                                                         <>
-                                                            <PGrid  className="mt-2">
+                                                            <PGrid className="mt-2">
                                                                 {(item.items || []).map((subItem, j) => (
                                                                     <SummaryItem
                                                                         key={j}
@@ -215,14 +214,14 @@ export const PSummary = ({ sections = [], currentStep = 3, refreshSummary,layout
                                                                 <PGrid container>
                                                                     <PGrid item xs={12} className="d-flex gap-2 py-2">
                                                                         <PButton
-                                                                           // label="Edit"
+                                                                            // label="Edit"
                                                                             variant="outlined"
                                                                             //color={CommonColors.grey.main}
                                                                             startIcon={<EditIcon />}
                                                                             width={30}
                                                                             sx={{
                                                                                 "& .MuiButton-startIcon": {
-                                                                                marginRight: 0,
+                                                                                    marginRight: 0,
                                                                                 },
                                                                             }}
                                                                             onClick={() => handleEdit(section.step, item.enquiryId)}
@@ -231,11 +230,11 @@ export const PSummary = ({ sections = [], currentStep = 3, refreshSummary,layout
                                                                             <PButton
                                                                                 //label="Duplicate"
                                                                                 variant="outlined"
-                                                                               // color={CommonColors.green.main}
+                                                                                // color={CommonColors.green.main}
                                                                                 startIcon={<ContentCopyIcon />}
                                                                                 sx={{
                                                                                     "& .MuiButton-startIcon": {
-                                                                                    marginRight: 0,
+                                                                                        marginRight: 0,
                                                                                     },
                                                                                 }}
                                                                                 width={30}

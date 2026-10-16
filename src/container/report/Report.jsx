@@ -1,7 +1,5 @@
 
-import {
-    Box,
-} from "@mui/material";
+import { Box } from "@mui/material";
 import PGrid from "../../component/PGrid/PGrid";
 import PTypography from "../../component/PTypography/PTypography";
 import { Labels } from "../../utils/constants/labels";

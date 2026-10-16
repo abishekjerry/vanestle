@@ -1,5 +1,5 @@
 
-export const getSummarySections = ({ menuId ,clientInfo = [], enquiryDetails = [], lineItems = [], suppliers = [], getLabel, handleEdit }) => {
+export const getSummarySections = ({ menuId, clientInfo = [], enquiryDetails = [], lineItems = [], suppliers = [], getLabel, handleEdit }) => {
   const labels = {
     1: [getLabel("lbl21"), getLabel("lbl22")],
     2: ["Bid Details", "Bid Items"],
@@ -103,6 +103,7 @@ export const getLineneItems = (formData = {}, formDataList = {}, getLabel, getOp
 
     { key: "rateCard", label: "lbl106" },
     { key: "eauction", label: "lbl110" },
+    { key: "competetiveWinningSupplier", label: "lbl153" },
     { key: "promoOSSOrderWindows", label: "lbl107" },
     { key: "regionalname", label: "lbl108" },
     { key: "catalogueUsage", label: "lbl109" },
@@ -133,11 +134,13 @@ export const getLineneItems = (formData = {}, formDataList = {}, getLabel, getOp
     itemTitle: `Item ${item.itemNumber}`,
     itemColor: "warning",
     enquiryId: item.enqdetailsId,
-    items: lineItemMapping.filter(field => field.key !== "incoterm" || item.printornonprint === "Promo")
-    .map(field => ({
-      label: field.label === "Attachment" ? field.label : getLabel(field.label),
-      value: field.key ? item[field.key] ?? "-" : field.value
-    }))
+    items: lineItemMapping
+      .filter(field => field.key !== "incoterm" || item.printornonprint === "Promo")
+      .filter(field => field.key !== "competetiveWinningSupplier" || item.eauction === "Yes")
+      .map(field => ({
+        label: field.label === "Attachment" ? field.label : getLabel(field.label),
+        value: field.key ? item[field.key] ?? "-" : field.value
+      }))
   }));
   return lineItems;
 };

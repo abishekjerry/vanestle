@@ -110,7 +110,6 @@ const PDeliveryOrder = (props) => {
             }
 
         } catch (error) {
-            console.error(error);
             toast(Labels.status.failure, Labels.message.somethingWentWrong);
         } finally {
             setLoading(false);

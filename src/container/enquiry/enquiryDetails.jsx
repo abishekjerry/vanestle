@@ -173,7 +173,6 @@ const EnquiryDetails = () => {
                 }))
                 // Update state
                 const projectQuoteType = formDataList.quoteType.find(item => item.label === data.enqProjectinfo.projectQuotetype)?.value;
-                console.log(projectQuoteType);
                 setFormData(prev => ({
                     ...prev,
                     projectNo: data.enqProjectinfo.projectNo,

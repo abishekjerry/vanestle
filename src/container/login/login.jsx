@@ -14,11 +14,7 @@ import PContainer from "../../component/PContainer/PContainer";
 import PDialog from "../../component/PDialog/PDialog";
 import { FontWeight } from "../../utils/constants/fonts";
 import arrow from "../../utils/assets/images/arrow_white.svg";
-import {
-  allowOnlyAlphabets,
-  validatePassword,
-  validateName, isSuccess
-} from "../../utils/commonFunction/common";
+import {allowOnlyAlphabets, validatePassword,validateName, isSuccess} from "../../utils/commonFunction/common";
 import { userDetails, clearUserDetails } from "../../redux/actionType/actionType";
 import { connect } from "react-redux";
 import { AppNavigation } from "../../navigations/appNavigation";

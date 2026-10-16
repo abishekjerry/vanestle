@@ -45,7 +45,7 @@ const ProjectEnquiry = () => {
     const { getLabel } = useLanguage();
     const [loading, setLoading] = useState(true);
     const [dynamicData, setDynamicData] = useState({});
-    const { country, userID, fkID, currency, userType, menuId, symbol } = useSelector((state) => state.userDetails.user);
+    const { country, userID, fkID, currency, userType, menuId, symbol, enquiryId , userName, email } = useSelector((state) => state.userDetails.user);
     const id = state?.id > 0 ? state.id : 0;
     const actionFlag = isNotEmpty(state?.id) && state?.id !== 0 ? Labels.flag.Update : Labels.flag.Insert;
     const today = formatDate(new Date());
@@ -1072,6 +1072,16 @@ const ProjectEnquiry = () => {
             status: formData.status
         }
 
+        const updateSurvey ={
+            enqId: id,
+            country : country,
+            projectNumber :formDataList.enquiryDetails.projectNo,
+            projectDescription: formDataList.enquiryDetails.projectDesc,
+            enquiryNumber: enquiryId ,
+            clientName: userName,
+            emailAddress: email,
+        }
+
         try {
             switch (flag) {
                 case "status":
@@ -1112,6 +1122,11 @@ const ProjectEnquiry = () => {
                 case "inputPS":
                     activeTab = "Project Savings";
                     response = await PostApi(ProjectEnquiry_API.PostRefPrice, projectQuotes);
+                    break;
+
+                case "email":
+                    activeTab = "Job Summary";
+                    response = await PostApi(ProjectEnquiry_API.UpdateSurvey, updateSurvey);
                     break;
 
                 default:
@@ -2334,13 +2349,7 @@ const ProjectEnquiry = () => {
                                 onClick={handleSendChoose}
                                 color={CommonColors.dark_blue}
                                 width={290}
-                                startIcon={
-                                    <img
-                                        src={arrow}
-                                        alt="arrow"
-                                        className="icon"
-                                    />
-                                }
+                                startIcon={<img src={arrow} alt="arrow" className="icon" />}
                             />
                         </PGrid >
                     }
@@ -2411,19 +2420,6 @@ const ProjectEnquiry = () => {
                     </PGrid>
                 </PDialog>
 
-                <style>
-                    {`  
-                .peBoxWrapper{ margin-bottom:60px; max-width: 900px !important;}
-                .peBox-0 p:last-child{
-                    font-size:48px;
-                    line-height:52px;
-                }
-                @media only screen and (min-width:1500px){
-                    .peBoxWrapper{ max-width: 1000px !important;}
-                }
-            `}
-                </style>
-
                 {/* Preview Supplier Quotes dialog */}
                 <PDialog
                     open={formData.preview}
@@ -2441,6 +2437,19 @@ const ProjectEnquiry = () => {
                         </PGrid>
                     </PGrid>
                 </PDialog>
+
+                <style>
+                    {`  
+                        .peBoxWrapper{ margin-bottom:60px; max-width: 900px !important;}
+                        .peBox-0 p:last-child{
+                            font-size:48px;
+                            line-height:52px;
+                        }
+                        @media only screen and (min-width:1500px){
+                            .peBoxWrapper{ max-width: 1000px !important;}
+                        }
+                    `}
+                </style>
             </Box >
         </>
     )

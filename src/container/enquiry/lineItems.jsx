@@ -475,10 +475,10 @@ const LineItems = () => {
                             state: { id: response.data.enqId }
                         });
                     }, 500);
-                    if (!flag) {
+                    //if (!flag) {
                         await handleCancel();
                         await fetchData();
-                    };
+                    //};
                 } else {
                     setErrors((prev) => ({
                         ...prev,

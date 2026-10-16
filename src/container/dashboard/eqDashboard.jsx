@@ -61,6 +61,7 @@ const EqDashboard = () => {
   const [chartOrginalData, setChartOrginalData] = useState([]);
   const { countryID, role, userName, userType, menuId, userID } = useSelector((state) => state.userDetails.user);
   const [formData, setFormData] = useState({
+    clientName: "",
     country: "",
     user: "",
     startDate: "",
@@ -72,6 +73,7 @@ const EqDashboard = () => {
 
   const [formDataList, setFormDataList] = useState({
     country: [],
+    clientName: [],
     user: [],
   });
   const [errors, setErrors] = useState({
@@ -90,12 +92,13 @@ const EqDashboard = () => {
       });
       setFormDataList({
         country: response.country,
-        user: response.user
+        user: response.user,
+        clientName: response.client
       });
       setFormData({
         ...formData,
         country: role === Labels.role.admin ? 0 : countryID
-      })
+      });
       const res = await PostApi(Dashboard_API.Dashboard, {
         userCountryId: countryID,
         role: role,
@@ -128,6 +131,7 @@ const EqDashboard = () => {
           date: item.serverTime,
           id: item.id,
           stepID: item.stepId,
+          clientId : item.clientId
         }));
         setRows(formattedRows);
         const formattedChartData = (data.summary?.jobStatus || []).map(
@@ -442,12 +446,17 @@ const EqDashboard = () => {
     }
 
     // country filter
-    if (isNotEmpty(formData.country)) {
+    // if (isNotEmpty(formData.country)) {
+    //   result = result.filter(
+    //     (item) => item.countryID === Number(formData.country)
+    //   );
+    // }
+
+    if (isNotEmpty(formData.clientName)) {
       result = result.filter(
-        (item) => item.countryID === Number(formData.country)
+        (item) => item.clientId === Number(formData.clientName)
       );
     }
-
     // user filter
     if (isNotEmpty(formData.user)) {
       result = result.filter(
@@ -494,7 +503,8 @@ const EqDashboard = () => {
       //country: "",
       user: "",
       search: "",
-      status: ""
+      status: "",
+      clientName : ""
     }));
 
     setChartData(chartOrginalData);
@@ -694,11 +704,21 @@ const EqDashboard = () => {
 
             <PGrid container className={Labels.margin.mb3} spacing={0}>
               <PGrid item xs={12} sm={6} md={4}>
-                <PDropdown
+                {/* <PDropdown
                   label={getLabel("lbl09")}
                   value={formData.country}
                   onChange={(e) => setFormData({ ...formData, country: e.target.value })}
                   options={formDataList.country}
+                  width={Labels.fontSize.xxxxl}
+                  flag={Labels.flag.auto}
+                  readOnly={role === Labels.role.admin ? false : true}
+                  labelMode="inside"
+                /> */}
+                <PDropdown
+                  label={getLabel("lbl28")}
+                  value={formData.clientName}
+                  onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
+                  options={formDataList.clientName}
                   width={Labels.fontSize.xxxxl}
                   flag={Labels.flag.auto}
                   readOnly={role === Labels.role.admin ? false : true}
@@ -712,7 +732,7 @@ const EqDashboard = () => {
                   onChange={(e) => setFormData({ ...formData, user: e.target.value })}
                   options={formDataList.user}
                   width={Labels.fontSize.xxxxl}
-                  flag={Labels.flag.auto}
+                  //flag={Labels.flag.auto}
                   labelMode="inside"
                 />
               </PGrid>
@@ -787,7 +807,7 @@ const EqDashboard = () => {
         </PGrid>
       </Box >
 
-      
+
       <PDialog
         open={openFilter}
         onClose={handleCloseChoose}
