@@ -45,7 +45,7 @@ const ProjectEnquiry = () => {
     const { getLabel } = useLanguage();
     const [loading, setLoading] = useState(true);
     const [dynamicData, setDynamicData] = useState({});
-    const { country, userID, fkID, currency, userType, menuId, symbol, enquiryId , userName, email } = useSelector((state) => state.userDetails.user);
+    const { country, userID, fkID, currency, userType, menuId, symbol, enquiryId, userName, email } = useSelector((state) => state.userDetails.user);
     const id = state?.id > 0 ? state.id : 0;
     const actionFlag = isNotEmpty(state?.id) && state?.id !== 0 ? Labels.flag.Update : Labels.flag.Insert;
     const today = formatDate(new Date());
@@ -94,8 +94,12 @@ const ProjectEnquiry = () => {
         raisedDate: "",
         invoicenumber: "",
         actualDeliveryDate: "",
-        projectStatus: ""
+        projectStatus: "",
 
+        //spot flag
+        isSpot: 0,
+        isSpotCompleted: 0,
+        isProject: 0
     });
     const [formDataList, setFormDataList] = useState({
         clientInfo: [],
@@ -179,12 +183,14 @@ const ProjectEnquiry = () => {
         //Supplier Quotations
         supplierQuotes: [{ field: "itemName", header: "Item Name" }, { field: "initialQuote", header: `Initial Quote (${symbol})` }, { field: "unitPrice", header: `Unit Price (${symbol})` },],
         projectSupplierQuotes: [],
+        materialUsed: []
     });
 
-    const showProjectSaving = formDataList.projectSavings?.length > 0;
+    const showProjectSaving = formData.isProject > 0; //formDataList.projectSavings?.length > 0;
     const deliveryFlag = formData.statusId >= 6;
     const createOrderFlag = formDataList.deliveryOrder?.length > 0;
     const flag = userType?.toLowerCase() === Labels.userType.agency
+    const isSpot = formData.isSpot > 0;
     const tabs = [
         { label: "Job Summary", icon: <WorkOutlineIcon /> },
         { label: "Line Items", icon: <Inventory2Icon /> },
@@ -192,7 +198,7 @@ const ProjectEnquiry = () => {
             label: userType?.toLowerCase() === Labels.userType.supplier ? "Your Quote Submissions"
                 : "Project Quotation", icon: <SavingsIcon />
         }] : []),
-        ...(flag ? [{ label: "SPOT", icon: <BoltIcon /> }] : []),
+        ...(flag && isSpot ? [{ label: "SPOT", icon: <BoltIcon /> }] : []),
         ...(deliveryFlag && flag ? [{ label: "Delivery Order", icon: <LocalShippingIcon /> }] : []),
         ...(flag ? [{ label: "RFQ", icon: <RequestQuoteIcon /> }] : []),
         ...(showProjectSaving && flag ? [{ label: "Project Savings", icon: <SavingsIcon /> }] : []),
@@ -302,7 +308,8 @@ const ProjectEnquiry = () => {
                 savingsResponseDto: projectResponse.savingsResponseDto,
                 deliveryOrder: projectResponse.deliveryOrder,
                 status: projectResponse.projectStatus,
-                previewSupplierQuotes: previewQuotes
+                previewSupplierQuotes: previewQuotes,
+                materialUsed: enqResponse.materialUsed
             }));
             setFormData(prev => ({
                 ...prev,
@@ -313,6 +320,9 @@ const ProjectEnquiry = () => {
                 psFlag: !projectResponse.savingsResponseDto.details[0]?.previousPrice > 0,
                 statusId: response.statusId,
                 projectStatus: response.jobstatus,
+                isSpotCompleted: response.isSpotcompleted,
+                isSpot: response.spotNeeded,
+                isProject: response.isprojectsavings
             }));
 
             await clientInfoMaster(response.enqClientinfo.divisionid);
@@ -925,13 +935,7 @@ const ProjectEnquiry = () => {
                     onClick={(e) => handleSubmit(e, flag)}
                     width={180}
                     disabled={formData.validateFlag}
-                    startIcon={
-                        <img
-                            src={arrow}
-                            alt="arrow"
-                            className="icon"
-                        />
-                    }
+                    startIcon={<img src={arrow} alt="arrow" className="icon" />}
                 />
             </div>
 
@@ -1072,12 +1076,12 @@ const ProjectEnquiry = () => {
             status: formData.status
         }
 
-        const updateSurvey ={
+        const updateSurvey = {
             enqId: id,
-            country : country,
-            projectNumber :formDataList.enquiryDetails.projectNo,
+            country: country,
+            projectNumber: formDataList.enquiryDetails.projectNo,
             projectDescription: formDataList.enquiryDetails.projectDesc,
-            enquiryNumber: enquiryId ,
+            enquiryNumber: enquiryId,
             clientName: userName,
             emailAddress: email,
         }
@@ -1320,7 +1324,10 @@ const ProjectEnquiry = () => {
                         <Box sx={{ display: "flex", justifyContent: "center", gap: 2, flexWrap: "wrap", mb: 3 }}>
                             {tabs.map((tab) => (
                                 <Tooltip title={tab.label} key={tab.label}>
-                                    <Box key={tab.label} onClick={() => setFormData(prev => ({ ...prev, activeTab: tab.label }))}
+                                    <Box key={tab.label} onClick={async () => {
+                                        setFormData(prev => ({ ...prev, activeTab: tab.label }));
+                                        if (tab.label === "Project Savings") await fetchData()
+                                    }}
                                         sx={{
                                             width: 50, height: 50, borderRadius: "50%", cursor: "pointer",
                                             display: "flex", alignItems: "center", justifyContent: "center",
@@ -1590,8 +1597,8 @@ const ProjectEnquiry = () => {
 
                 {formData.activeTab === "SPOT" && (
                     <div>
-                        <PSpotSection />
-                        <PGrid container className={Labels.margin.mb0}>
+                        <PSpotSection response={formDataList.materialUsed} />
+                        <PGrid container className={Labels.margin.mt3}>
                             <PGrid item xs={12} sm={6} md={6}>
                                 <PTypography
                                     labelText={getLabel("lbl168")}
@@ -1935,16 +1942,18 @@ const ProjectEnquiry = () => {
                                                 </div>
                                             </PGrid>
                                         </PGrid>
-                                        <PGrid container className={Labels.margin.mb3}>
-                                            <PGrid item xs={12} sm={6} md={6}>
-                                                <PTypography
-                                                    labelText={getLabel("lbl240")}
-                                                    flag={Labels.fontFlags.smallText}
-                                                    color={CommonColors.red.main}
-                                                    weight={FontWeight.bold}
-                                                />
+                                        {[0].includes(formData.isSpotCompleted) && (
+                                            <PGrid container className={Labels.margin.mb3}>
+                                                <PGrid item xs={12} sm={6} md={6}>
+                                                    <PTypography
+                                                        labelText={getLabel("lbl240")}
+                                                        flag={Labels.fontFlags.smallText}
+                                                        color={CommonColors.red.main}
+                                                        weight={FontWeight.bold}
+                                                    />
+                                                </PGrid>
                                             </PGrid>
-                                        </PGrid>
+                                        )}
 
                                         <Divider sx={{ mb: 2 }} />
                                         <PGrid container className={Labels.margin.mb3}>
@@ -1983,6 +1992,7 @@ const ProjectEnquiry = () => {
                                                 onClick={(e) => handleQuotation(e, 3)}
                                                 width={320}
                                                 startIcon={<img src={arrow} alt="arrow" className="icon" />}
+                                                disabled={formData.isSpotCompleted == 0}
                                             />
                                         </PGrid>
                                     </div>

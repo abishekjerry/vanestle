@@ -74,6 +74,16 @@ export const ProjectEnquiry_API = {
   UpdateSurvey : Base_Url + "/VA/UpdateSurvey",
 }
 
+export const Spot_API = {
+  GetSpotEnvironmentResult : Base_Url + "/VA/GetSpotEnvironmentResult",
+  GetSpotEnvItems : Base_Url +  "/VA/SpotEnvItems",
+  BindMaterial : Base_Url + "/VA/BindMaterial",
+  GetEnvironmentalType : Base_Url + "/VA/GetEnvironmentalType",
+  UpdateEnvironmental : Base_Url + "/VA/UpdateEnvironmental",
+  UpdateComparativeEnvironmental : Base_Url + "/VA/UpdateComparativeEnvironmental",
+  UpdateNoCompareReason : Base_Url + "/VA/UpdateNoCompareReason"
+}
+ 
 export const Report_API = {
   GetReport : Base_Url + "/VA/GetReport"
 }

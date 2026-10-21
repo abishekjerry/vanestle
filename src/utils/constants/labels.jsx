@@ -213,6 +213,7 @@ export const Labels = {
     Insert: "Insert",
     Update: "Update",
     file: "File",
+    total : "Total"
   },
 
   reportName: {

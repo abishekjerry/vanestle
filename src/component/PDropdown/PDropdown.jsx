@@ -18,23 +18,17 @@ import { FormControlBaseStyle } from "../../utils/constants/styles";
 
 const PDropdown = ({ name = "", label, value = "", onChange, options = [], required = false, helperText = "",
   width = "", mt = 0.4, flag = "", disabled = false, readOnly = false, sx = {}, labelMode = "" }) => {
-  const defaultValueRef = useRef("");
+  const defaultValueRef = useRef(false);
   useEffect(() => {
     if (value !== undefined && value !== null && value !== "") {
-      defaultValueRef.current = value;
+      defaultValueRef.current = false;
       return;
     }
-    const selectedOption = options.find(
-      option => option.selected === true
-    );
-    if (!selectedOption) {
+    const selectedOption = options.find(option => option.selected === true);
+    if (!selectedOption || defaultValueRef.current) {
       return;
     }
-    // Prevent repeated onChange calls
-    if (defaultValueRef.current === selectedOption.value) {
-      return;
-    }
-    defaultValueRef.current = selectedOption.value;
+    defaultValueRef.current = true;
     onChange({
       target: {
         name,
@@ -49,16 +43,16 @@ const PDropdown = ({ name = "", label, value = "", onChange, options = [], requi
       return value;
     }
     const selectedOption = options.find(option => option.selected);
-    return selectedOption?.value || "";
+    return selectedOption?.value ?? "";
   }, [value, options]);
 
   const selectedOption = useMemo(() =>
-    options.find(option => option.value === internalValue) || null,
-    [options, internalValue]
+    options.find(option => option.value === internalValue) ?? null, [options, internalValue]
   );
 
   const baseSx = {
-    width: width ? `${width}%` : Labels.fontSize.xxxxl,
+    width: width ? `${width}%` : "100%",
+    minWidth: 0,
     mt,
 
     "& .MuiInputLabel-root": {
@@ -71,14 +65,11 @@ const PDropdown = ({ name = "", label, value = "", onChange, options = [], requi
       "&.Mui-disabled": { color: "#bdbdbd" },
     },
 
-    // "& .MuiInputLabel-shrink": {
-    //   color: "#49C9E9",
-    //   fontWeight: 600,
-    //   fontSize: "12px",
-    //   transform: "translate(14px, -6px) scale(1)"
-    // },
-
+    // Same height for normal Select and Autocomplete
     "& .MuiOutlinedInput-root": {
+      height: "50px",
+      minHeight: "50px",
+      boxSizing: "border-box",
       borderRadius: "12px",
       backgroundColor: "#fcfbfd",
       boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
@@ -88,18 +79,42 @@ const PDropdown = ({ name = "", label, value = "", onChange, options = [], requi
 
       "& fieldset": {
         borderColor: helperText ? "#d32f2f" : "#ccc",
-        borderWidth: "1.5px"
+        borderWidth: "1.5px",
       },
 
       "&:hover fieldset": {
-        borderColor: "#42A8C8"
+        borderColor: "#42A8C8",
       },
 
       "&.Mui-focused fieldset": {
         borderColor: "#ccc",
         borderWidth: "1.5px",
-        boxShadow: "0 0 0 3px rgba(98,188,216,0.15)"
+        boxShadow: "0 0 0 3px rgba(98,188,216,0.15)",
       },
+    },
+
+    // Normal Select text alignment
+    "& .MuiSelect-select": {
+      height: "50px !important",
+      minHeight: "0",
+      boxSizing: "border-box",
+      display: "flex",
+      alignItems: "center",
+      paddingTop: "0 !important",
+      paddingBottom: "0 !important",
+    },
+
+    // Autocomplete input alignment
+    "& .MuiAutocomplete-inputRoot": {
+      height: "50px",
+      minHeight: "50px",
+      boxSizing: "border-box",
+      paddingTop: "0 !important",
+      paddingBottom: "0 !important",
+    },
+
+    "& .MuiAutocomplete-input": {
+      padding: "0 !important",
     },
 
     "& .MuiFormHelperText-root": {
@@ -107,8 +122,8 @@ const PDropdown = ({ name = "", label, value = "", onChange, options = [], requi
       fontSize: FontSize.textField.error,
       color: CommonColors.textError,
       marginLeft: "2px",
-      marginTop: "4px"
-    }
+      marginTop: "4px",
+    },
   };
 
   const renderTextField = params => (
@@ -181,22 +196,15 @@ const PDropdown = ({ name = "", label, value = "", onChange, options = [], requi
       <Select
         displayEmpty
         value={internalValue}
-        // label={labelMode === "" ? "Please select" : label}
         name={name}
+        renderValue={(selected) => selected ? (options.find((o) => o.value === selected)?.label) : (
+          <span style={{ color: "#C6C7C8" }}>
+            {labelMode === "inside" ? label : "Please Select"}
+          </span>
+        )}
         IconComponent={KeyboardArrowDownOutlinedIcon}
-        renderValue={(selected) =>
-          selected ? (
-            options.find((o) => o.value === selected)?.label
-          ) : (
-            <span style={{ color: "#C6C7C8" }}>
-              {labelMode === "inside" ? label : "Please Select"}
-            </span>
-          )
-        }
         onChange={(e) => {
-          const selected = options.find(
-            (opt) => opt.value === e.target.value
-          );
+          const selected = options.find((opt) => opt.value === e.target.value);
           onChange({
             target: {
               name: name,
@@ -207,7 +215,9 @@ const PDropdown = ({ name = "", label, value = "", onChange, options = [], requi
         }}
       >
         {!disabled && (
-          <MenuItem value=""> <em>-- Choose --</em> </MenuItem>
+          <MenuItem value="">
+            -- Choose --
+          </MenuItem>
         )}
 
         {options.map((option) => (

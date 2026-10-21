@@ -174,7 +174,8 @@ const PTable = ({ columns, rows, onClick, isChecked = false, showCheckbox = fals
       sx={{
         cursor: onClick ? "pointer" : "default",
         "&:hover": { backgroundColor: "#F4F6FA" },
-        backgroundColor: index % 2 ? "#F4F6FA" : "#fff",
+        //backgroundColor: index % 2 ? "#F4F6FA" : "#fff",
+        backgroundColor: row.bgcolor ? row.bgcolor : index % 2 ? "#F4F6FA": "#fff"
       }}
     >
       {columns.map((col, i) => (
@@ -187,7 +188,8 @@ const PTable = ({ columns, rows, onClick, isChecked = false, showCheckbox = fals
             py: 1.8,
             whiteSpace: "nowrap",
             cursor: "pointer",
-            border: "0"
+            border: "0",
+            fontWeight: row.type === Labels.flag.total ? "bold" : "normal",
           }}
         >
           {renderCell(col, row, index, { isFirstCol: i === 0 })}
