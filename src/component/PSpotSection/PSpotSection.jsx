@@ -26,6 +26,8 @@ import PDialog from "../PDialog/PDialog";
 import { ProjectEnquiry_API, Spot_API } from "../../utils/api/apiUrl";
 import { useLocation } from "react-router-dom";
 import { GetApi, PostApi } from "../../utils/api/networking";
+import CircularProgress from "@mui/material/CircularProgress";
+
 const PSpotSection = ({ response }) => {
     const { getLabel } = useLanguage();
     const [loading, setLoading] = useState(true);
@@ -509,7 +511,7 @@ const PSpotSection = ({ response }) => {
         , { field: "explanation", header: "Explanation", render: (row) => renderViewActions(row) }
     ]
 
-    const enviromantalImpactMaterial = [{ field: "environmentalPaperName", header: "Type" }, { field: "environmentalGhg", header: "Embodied Carbon" }
+    const enviromantalImpactMaterial = [{ field: "environmentalPaperGrade", header: "Type" }, { field: "environmentalGhg", header: "Embodied Carbon" }
         , { field: "environmentalWater", header: "Water Usage" }, { field: "environmentalEnergy", header: "Total Energy" }
         , { field: "environmentalWood", header: "Wood" }, { field: "explanation", header: "Explanation", render: (row) => renderViewActions(row, true) }
     ]
@@ -585,6 +587,8 @@ const PSpotSection = ({ response }) => {
         }
         return CommonColors.yellow.main;
     };
+    const title = "Print/POSM/PROMO Materials";
+    const subTitle = "Type & weight"
     const formatCompareValue = (value) => !isNaN(value) && value !== "" ? Math.abs(Number(value)) : value;
     return (
         <>
@@ -606,7 +610,7 @@ const PSpotSection = ({ response }) => {
                 <PGrid container className="d-flex justify-content-end align-items-center mb-1">
                     <PGrid item xs={12} sm={6} md={8}>
                         <PTypography
-                            labelText={`${getLabel("lbl193")} ( ${getLabel("lbl190")} )`}
+                            labelText={`${title} ( ${subTitle} )`}
                             weight={FontWeight.bold}
                             flag={Labels.fontFlags.normalText}
                         />
@@ -630,7 +634,7 @@ const PSpotSection = ({ response }) => {
                 <Collapse in={formData.emmdSpot} timeout="auto" unmountOnExit>
                     <PGrid container className={Labels.margin.mb1}>
                         <PGrid item xs={12} sm={6} md={12}>
-                            <PTable columns={mainMaterial} rows={formDataList.mainMaterial} showPagination={false} loading={loading}/>
+                            <PTable columns={mainMaterial} rows={formDataList.mainMaterial} showPagination={false} loading={loading} />
                         </PGrid>
                     </PGrid>
                 </Collapse>
@@ -641,7 +645,7 @@ const PSpotSection = ({ response }) => {
                 <PGrid container className="d-flex justify-content-end align-items-center mb-1">
                     <PGrid item xs={12} sm={6} md={8}>
                         <PTypography
-                            labelText={`${getLabel("lbl192")} ( ${getLabel("lbl190")} )`}
+                            labelText={`${getLabel("lbl192")} ( ${subTitle} )`}
                             weight={FontWeight.bold}
                             flag={Labels.fontFlags.normalText}
                         />
@@ -664,7 +668,7 @@ const PSpotSection = ({ response }) => {
                 <Collapse in={formData.epdSpot} timeout="auto" unmountOnExit>
                     <PGrid container className={Labels.margin.mb1} >
                         <PGrid item xs={12} sm={6} md={12}>
-                            <PTable columns={packagingMaterial} rows={formDataList.packagingMaterial} showPagination={false} loading={loading}/>
+                            <PTable columns={packagingMaterial} rows={formDataList.packagingMaterial} showPagination={false} loading={loading} />
                         </PGrid>
                     </PGrid>
                 </Collapse>
@@ -676,7 +680,7 @@ const PSpotSection = ({ response }) => {
                     <PGrid container className={Labels.margin.mb3}>
                         <PGrid item xs={12} sm={6} md={6}>
                             <PTypography
-                                labelText={`${getLabel("lbl194")} ( ${getLabel("lbl197")} )`}
+                                labelText={`${getLabel("lbl194")} ( ${title} )`}
                                 weight={FontWeight.bold}
                                 flag={Labels.fontFlags.normalText}
                             />
@@ -700,7 +704,7 @@ const PSpotSection = ({ response }) => {
 
                     <PGrid container>
                         <PGrid item xs={12} sm={6} md={12}>
-                            <PTable columns={impactMaterial} rows={formDataList.impactMaterial} showPagination={false} loading={loading}/>
+                            <PTable columns={impactMaterial} rows={formDataList.impactMaterial} showPagination={false} loading={loading} />
                         </PGrid>
                     </PGrid>
                 </Box>
@@ -713,7 +717,7 @@ const PSpotSection = ({ response }) => {
                         <PGrid item xs={12} sm={6} md={8}>
                             <PTypography
                                 //getLabel("lbl195")
-                                labelText={`${"Comparative Impact and Savings summary"} ( ${getLabel("lbl197")} )`}
+                                labelText={`${"Comparative Impact and Savings summary"} ( ${title} )`}
                                 weight={FontWeight.bold}
                                 flag={Labels.fontFlags.normalText}
                             />
@@ -724,7 +728,7 @@ const PSpotSection = ({ response }) => {
 
                     <PGrid container >
                         <PGrid item xs={12} sm={6} md={12}>
-                            <PTable columns={comparativeImpactMaterial} rows={formDataList.comparativeImpactMaterial} showPagination={false} loading={loading}/>
+                            <PTable columns={comparativeImpactMaterial} rows={formDataList.comparativeImpactMaterial} showPagination={false} loading={loading} />
                         </PGrid>
                     </PGrid>
                 </Box>
@@ -736,7 +740,7 @@ const PSpotSection = ({ response }) => {
                     <PGrid container className={Labels.margin.mb3}>
                         <PGrid item xs={12} sm={6} md={8}>
                             <PTypography
-                                labelText={`${getLabel("lbl196")} ( ${getLabel("lbl197")} )`}
+                                labelText={`${getLabel("lbl196")} ( ${title} )`}
                                 weight={FontWeight.bold}
                                 flag={Labels.fontFlags.normalText}
                             />
@@ -747,7 +751,7 @@ const PSpotSection = ({ response }) => {
 
                     <PGrid container >
                         <PGrid item xs={12} sm={6} md={12}>
-                            <PTable columns={totalMaterial} rows={formDataList.totalMaterial} showPagination={false} loading={loading}/>
+                            <PTable columns={totalMaterial} rows={formDataList.totalMaterial} showPagination={false} loading={loading} />
                         </PGrid>
                     </PGrid>
                 </Box>
@@ -770,7 +774,7 @@ const PSpotSection = ({ response }) => {
 
                     <PGrid container>
                         <PGrid item xs={12} sm={6} md={12}>
-                            <PTable columns={enviromantalImpactMaterial} rows={formDataList.enviromantalImpactMaterial} showPagination={false} loading={loading}/>
+                            <PTable columns={enviromantalImpactMaterial} rows={formDataList.enviromantalImpactMaterial} showPagination={false} loading={loading} />
                         </PGrid>
                     </PGrid>
                 </Box>
@@ -793,7 +797,7 @@ const PSpotSection = ({ response }) => {
 
                     <PGrid container>
                         <PGrid item xs={12} sm={6} md={12}>
-                            <PTable columns={packageComparativeImpact} rows={formDataList.packageComparativeImpact} showPagination={false} loading={loading}/>
+                            <PTable columns={packageComparativeImpact} rows={formDataList.packageComparativeImpact} showPagination={false} loading={loading} />
                         </PGrid>
                     </PGrid>
                 </Box>

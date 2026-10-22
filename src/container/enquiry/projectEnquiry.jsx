@@ -298,7 +298,7 @@ const ProjectEnquiry = () => {
                 savingsReasons: projectResponse.savingReasons,
                 historyLogs: projectResponse.historyLogs,
                 lineItemLogs: projectResponse.lineItemLogs,
-                historySearches: projectResponse.historySearches,
+                //historySearches: projectResponse.historySearches,
                 revisedQuotes: revisedQuotes,
                 requestQuotes: requestQuotes,
                 calculationDetails: projectResponse.calculationDetails,
@@ -570,11 +570,11 @@ const ProjectEnquiry = () => {
     const data = filteredData;
 
     //historyToolData Functionlity
-    const search = formData.historySearchTool.trim().toLowerCase();
-    const historyToolData = formDataList.historySearches.filter(item =>
-        !search || [item.brand, item.subCategory, item.qty, item.poNumber, item.enquiryID]
-            .some(v => v?.toString().toLowerCase().includes(search))
-    );
+    // const search = formData.historySearchTool.trim().toLowerCase();
+    // const historyToolData = formDataList.historySearches.filter(item =>
+    //     !search || [item.brand, item.subCategory, item.qty, item.poNumber, item.enquiryID]
+    //         .some(v => v?.toString().toLowerCase().includes(search))
+    // );
 
     const handleHistory = async (rows) => {
         setFormDataList(prev => ({
@@ -631,7 +631,7 @@ const ProjectEnquiry = () => {
     const renderProjectEditableField = (field) => ({
         render: (row) => {
             const isCostReduction = row?.savingType === "Cost Reduction";
-            if ((field === "baselineQuantity" || field === "previousSupplier") && !isCostReduction) {
+            if (["baselineQuantity", "previousSupplier"].includes(field) && !isCostReduction) {
                 return row[field];
             }
 
@@ -1236,12 +1236,13 @@ const ProjectEnquiry = () => {
                                 }}
                                 width={76}
                                 height={43}
+                                disabled = {formData.statusId >= 18}
                             />
                         </Box>
                     </PGrid>
                 </PGrid>
 
-                {flag && (
+                {flag && formData.statusId >= 7 && formData.statusId <= 23 && (
                     <PGrid container className={Labels.margin.mb3}>
                         <PGrid item xs={12} md={12} sm={12}>
                             <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 2, flexWrap: "wrap" }}>
@@ -1597,8 +1598,9 @@ const ProjectEnquiry = () => {
 
                 {formData.activeTab === "SPOT" && (
                     <div>
+                        
                         <PSpotSection response={formDataList.materialUsed} />
-                        <PGrid container className={Labels.margin.mt3}>
+                        <PGrid container className={Labels.margin.mt4}>
                             <PGrid item xs={12} sm={6} md={6}>
                                 <PTypography
                                     labelText={getLabel("lbl168")}
@@ -1614,29 +1616,33 @@ const ProjectEnquiry = () => {
                         </PGrid>
                         <Divider sx={{ mb: 2 }} />
                         <PGrid container className={Labels.margin.mb3}>
-                            <PGrid item xs={12} sm={6} md={4} >
-                                <PGrid className={`ps-2 mb-4`}>
+                            <PGrid item xs={12} sm={6} md={2} className={Labels.margin.mt3}>
+                                {/* <PGrid className={`ps-2 mb-4`}> */}
+                                <PTypography
+                                    labelText={`${getLabel("lbl168")} ( ${(Labels.symbols.percent)} ) : `}
+                                    weight={FontWeight.bold}
+                                />
+                            </PGrid>
+
+                            {formData.fee ? (
+                                <PGrid item xs={12} sm={6} md={2}>
+                                    <PTextField
+                                        name="managementFee"
+                                        value={formData.managementFee}
+                                        onChange={handleChange}
+                                    />
+                                </PGrid>
+                            ) : (
+                                <PGrid item xs={12} sm={6} md={2} className={Labels.margin.mt3}>
                                     <PTypography
-                                        labelText={`${getLabel("lbl168")} ( ${(Labels.symbols.percent)} )`}
+                                        labelText={formData.managementFee}
+                                        color={CommonColors.grey.main}
                                         weight={FontWeight.bold}
                                     />
-                                    {formData.fee ? (
-                                        <PTextField
-                                            name="managementFee"
-                                            value={formData.managementFee}
-                                            onChange={handleChange}
-                                        />
-                                    ) : (
-                                        <PTypography
-                                            labelText={formData.managementFee}
-                                            color={CommonColors.grey.main}
-                                            weight={FontWeight.bold}
-                                        />
-                                    )}
                                 </PGrid>
-                            </PGrid>
-                        </PGrid>
+                            )}
 
+                        </PGrid>
                     </div>
                 )}
 
@@ -2380,7 +2386,7 @@ const ProjectEnquiry = () => {
                 </PDialog>
 
                 {/* History Tool dialog */}
-                <PDialog
+                {/* <PDialog
                     open={formData.historyTool}
                     onClose={() => setFormData((prev) => ({
                         ...prev,
@@ -2428,7 +2434,7 @@ const ProjectEnquiry = () => {
                     <PGrid item xs={12} sm={6} md={12}>
                         <PTable columns={formDataList.historySearchesCloumns} rows={historyToolData} showCheckbox={true} onValidationChange={handleHistory} selectedRows={formDataList.selectedHistroyRows} />
                     </PGrid>
-                </PDialog>
+                </PDialog> */}
 
                 {/* Preview Supplier Quotes dialog */}
                 <PDialog
@@ -2450,7 +2456,7 @@ const ProjectEnquiry = () => {
 
                 <style>
                     {`  
-                        .peBoxWrapper{ margin-bottom:60px; max-width: 900px !important;}
+                        .peBoxWrapper{ margin-bottom:40px; max-width: 900px !important;}
                         .peBox-0 p:last-child{
                             font-size:48px;
                             line-height:52px;

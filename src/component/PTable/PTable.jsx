@@ -52,8 +52,6 @@ const PTable = ({ columns, rows, onClick, isChecked = false, showCheckbox = fals
     return selectedRows.some(item => item.supplierId === data.supplierId);
   };
 
-  // Pagination
-
   // Show only selected rows when global checkbox checked
   const filteredRows = isChecked ? rows.filter(row => selectedRows.some(sel => sel.supplierId === row.supplierId)) : (Array.isArray(rows) ? rows : []);
 
@@ -174,7 +172,6 @@ const PTable = ({ columns, rows, onClick, isChecked = false, showCheckbox = fals
       sx={{
         cursor: onClick ? "pointer" : "default",
         "&:hover": { backgroundColor: "#F4F6FA" },
-        //backgroundColor: index % 2 ? "#F4F6FA" : "#fff",
         backgroundColor: row.bgcolor ? row.bgcolor : index % 2 ? "#F4F6FA": "#fff"
       }}
     >
@@ -244,9 +241,6 @@ const PTable = ({ columns, rows, onClick, isChecked = false, showCheckbox = fals
           sx={{
             cursor: onClick ? "pointer" : "default",
             backgroundColor: item.isCalculateId && item.supplierId === item.isCalculateId ? "#E9E9F1" : i % 2 ? "#F4F6FA" : "#fff",
-            // "&:hover": {
-            //   backgroundColor: `${item.supplierId === item.isCalculateId ? "#BCCDDE" : "#f1f5f9" } !important`,
-            // },
           }}
         >
           {columns.map((col, cIndex) => {
@@ -373,6 +367,7 @@ const PTable = ({ columns, rows, onClick, isChecked = false, showCheckbox = fals
           </Box>
         )}
       </Paper>
+
       <PDialog
         open={formData.open}
         onClose={() => setFormData((prev) => ({
