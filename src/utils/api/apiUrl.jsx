@@ -81,7 +81,10 @@ export const Spot_API = {
   GetEnvironmentalType : Base_Url + "/VA/GetEnvironmentalType",
   UpdateEnvironmental : Base_Url + "/VA/UpdateEnvironmental",
   UpdateComparativeEnvironmental : Base_Url + "/VA/UpdateComparativeEnvironmental",
-  UpdateNoCompareReason : Base_Url + "/VA/UpdateNoCompareReason"
+  UpdateNoCompareReason : Base_Url + "/VA/UpdateNoCompareReason",
+  GetEnvironmentImpactDetails : Base_Url + "/VA/GetEnvironmentImpactDetails",
+  GetComparativeImpactDetails : Base_Url + "/VA/GetComparativeImpactDetails",
+  GetTotalImpactDetails : Base_Url + "/VA/GetTotalImpactDetails"
 }
  
 export const Report_API = {

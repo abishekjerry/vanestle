@@ -37,9 +37,8 @@ const PSpotSection = ({ response }) => {
         emmdSpot: true,
         factor: false,
         compare: false,
-        openImpact: false,
-        enImpact: false,
         nonCompare: false,
+        impact: false,
         id: "",
         material: "",
         type: "",
@@ -59,6 +58,7 @@ const PSpotSection = ({ response }) => {
         //materialUsed: [],
         bindMaterial: [],
         environmentalType: [],
+        impactDetails: [],
 
         emissionFactors: [{ field: "country", header: "Country" }, { field: "emissionFactor", header: "EmissionFactor" }],
         emissionFactorsData: [{ country: "Australia", emissionFactor: 0.76 }, { country: "China", emissionFactor: 0.8953 },
@@ -120,6 +120,33 @@ const PSpotSection = ({ response }) => {
             toast(Labels.status.failure, Labels.message.somethingWentWrong);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleView = async (row, flag) => {
+        try {
+            let response;
+            if (flag === "compare") {
+                response = await GetApi(`${Spot_API.GetComparativeImpactDetails}?id=${row.id}`);
+            }
+            else if (flag === "total") {
+                response = await GetApi(`${Spot_API.GetTotalImpactDetails}?enqDetailsid=${row.enqDetailsid}`);
+            }
+            else {
+                response = await GetApi(`${Spot_API.GetEnvironmentImpactDetails}?id=${row.id}`);
+            }
+            if (isSuccess(response)) {
+                setFormDataList(prev => ({
+                    ...prev,
+                    impactDetails: response.data,
+                }));
+                setFormData((prev) => ({
+                    ...prev,
+                    impact: true
+                }));
+            }
+        } catch (error) {
+            toast(Labels.status.failure, Labels.message.somethingWentWrong);
         }
     };
 
@@ -202,7 +229,7 @@ const PSpotSection = ({ response }) => {
         );
     };
 
-    const renderViewActions = (row, flag = false) => {
+    const renderViewActions = (row, flag = "") => {
         let data = null;
         if (flag == true && row.type == "Main") {
             data = formDataList.comparativeImpactMaterial.find(item => item.id == row.id)
@@ -218,15 +245,12 @@ const PSpotSection = ({ response }) => {
                     <VisibilityOutlinedIcon sx={actionIconSx}
                         onClick={(e) => {
                             e.stopPropagation();
-                            setFormData((prev) => ({
-                                ...prev,
-                                [flag ? "openImpact" : "enImpact"]: true
-                            }));
+                            handleView(row, flag);
                         }}
                     />
                 </Tooltip>
 
-                {[true].includes(flag) && (
+                {["impact"].includes(flag) && (
                     <Tooltip title="Compare" arrow>
                         <CompareOutlinedIcon sx={actionIconSx}
                             onClick={async (e) => {
@@ -448,6 +472,7 @@ const PSpotSection = ({ response }) => {
         }
         handleRowChange(row.id, field, e.target.label);
     };
+
     const mainMaterial = [{ field: "materialused", header: "Material Used", ...renderDropdownField("materialused", response) }
         , { field: "material", header: "Main Material", ...renderDropdownField("material", formDataList.bindMaterial) }
         , { field: "typeofmaterial", header: "Type Material", ...renderDropdownField("typeofmaterial", formDataList.environmentalType) }
@@ -469,14 +494,14 @@ const PSpotSection = ({ response }) => {
         , { field: "environmentalPaperGrade", header: "Type", render: (row) => row.type === Labels.flag.total ? row.environmentalPaperName : row.environmentalPaperGrade }
         , { field: "environmentalGhg", header: "Embodied Carbon" }, { field: "environmentalWater", header: "Water Usage" }
         , { field: "environmentalEnergy", header: "Total Energy" }, { field: "environmentalWood", header: "Wood" }
-        , { field: "explanation", header: "Explanation", render: (row) => row.type !== Labels.flag.total ? renderViewActions(row, true) : "" }
+        , { field: "explanation", header: "Explanation", render: (row) => row.type !== Labels.flag.total ? renderViewActions(row, "impact") : "" }
     ]
 
     const comparativeImpactMaterial = [{ field: "itemnumber", header: "Item Number" }
         , { field: "compareEnvironmentalPaperGrade", header: "Type", render: (row) => row.type === Labels.flag.total ? row.compareEnvironmentalPaperName : row.compareEnvironmentalPaperGrade }
         , { field: "compareEnvironmentalGhg", header: "Embodied Carbon" }, { field: "compareEnvironmentalWater", header: "Water Usage" }
         , { field: "compareEnvironmentalEnergy", header: "Total Energy" }, { field: "compareEnvironmentalWood", header: "Wood" }
-        , { field: "explanation", header: "Explanation", render: (row) => row.type !== Labels.flag.total ? renderViewActions(row) : "" }
+        , { field: "explanation", header: "Explanation", render: (row) => row.type !== Labels.flag.total ? renderViewActions(row, "compare") : "" }
     ]
 
     const totalMaterial = [{ field: "itemnumber", header: "Item Number" }
@@ -508,84 +533,30 @@ const PSpotSection = ({ response }) => {
                 {formatCompareValue(row.wood)}
             </span>)
     }
-        , { field: "explanation", header: "Explanation", render: (row) => renderViewActions(row) }
+        , { field: "explanation", header: "Explanation", render: (row) => renderViewActions(row, "total") }
     ]
 
     const enviromantalImpactMaterial = [{ field: "environmentalPaperGrade", header: "Type" }, { field: "environmentalGhg", header: "Embodied Carbon" }
         , { field: "environmentalWater", header: "Water Usage" }, { field: "environmentalEnergy", header: "Total Energy" }
-        , { field: "environmentalWood", header: "Wood" }, { field: "explanation", header: "Explanation", render: (row) => renderViewActions(row, true) }
+        , { field: "environmentalWood", header: "Wood" }, { field: "explanation", header: "Explanation", render: (row) => renderViewActions(row, "impact") }
     ]
 
     const packageComparativeImpact = [{ field: "compareEnvironmentalPaperName", header: "Type" }, { field: "compareEnvironmentalGhg", header: "Embodied Carbon" }
         , { field: "compareEnvironmentalWater", header: "Water Usage" }, { field: "compareEnvironmentalEnergy", header: "Total Energy" }
-        , { field: "compareEnvironmentalWood", header: "Wood" }, { field: "explanation", header: "Explanation", render: (row) => renderViewActions(row) }
-    ]
-    //dialog data
-    const environmentalImpact = [
-        {
-            heading: "Wood use",
-            value: "Art Carton uses 272.400 Kg wood equivalent to 0 tree(s)"
-        },
-        {
-            heading: "Total energy",
-            value: "Art Carton uses 0.880 MWh of Energy equivalent to 2 residential refrigerators operated/year"
-        },
-        {
-            heading: "Greenhouse gases/climate change impacts",
-            value: "Art Carton emits 953.000 kg CO2 equivalent to emissions from 0 cars/year"
-        },
-        {
-            heading: "Water consumption",
-            value: "Art Carton uses 15.000 m3 of water equivalent to 0 olympic size swimming pool"
-        }
-    ]
-
-    const comparativeEnvironmentalImpact = [
-        {
-            heading: "Wood use",
-            content: [
-                "Art Carton uses 272.400 Kg wood equivalent to 0 tree(s) of standard dimension (25m height and 0.3 m in Diameter)",
-                "Poster Paper uses 197.400 Kg wood equivalent to 0 tree(s) of standard dimension (25m height and 0.3 m in Diameter)",
-                "Art Carton uses 75.000 Kg more Wood, a difference of 0 tree(s) of standard dimension (25m height and 0.3 m in Diameter)"
-            ]
-        },
-        {
-            heading: "Total energy",
-            content: [
-                "Art Carton uses 0.880 MWh of Energy equivalent to energy used by 2 residential refrigerators operated/year",
-                "Poster Paper uses 0.278 MWh of Energy equivalent to energy used by 1 residential refrigerators operated/year",
-                "Art Carton uses 0.602 MWh more of Energy, a difference of 1 residential refrigerators operated/year"
-            ]
-        },
-        {
-            heading: "Greenhouse gases/climate change impacts",
-            content: [
-                "Art Carton uses 953.000 kg CO2 equivalent to emissions from 0 cars/year",
-                "Poster Paper uses 129.000 kg CO2 equivalent to emissions from 0 cars/year",
-                "Art Carton uses 824.000 kg CO2 more, a difference of 0 cars/year"
-            ]
-        },
-        {
-            heading: "Water consumption",
-            content: [
-                "Art Carton uses 15.000 m3 of water equivalent to 0 olympic size swimming pool",
-                "Poster Paper uses 96.500 m3 of water equivalent to 0 olympic size swimming pool",
-                "Art Carton uses 81.500 m3 less of Water, a difference of 0 olympic size swimming pool"
-            ]
-        }
+        , { field: "compareEnvironmentalWood", header: "Wood" }, { field: "explanation", header: "Explanation", render: (row) => renderViewActions(row, "compare") }
     ]
 
     const getCompareColor = (value) => {
         const text = String(value ?? "").toLowerCase().trim();
         const number = Number(value);
-        if (text.includes("more")) return CommonColors.red.main;
-        if (text.includes("less")) return CommonColors.green.main;
+        if (text == "red") return CommonColors.red.main;
+        if (text == "green") return CommonColors.green.main;
 
         if (text !== "" && !Number.isNaN(number)) {
             if (number < 0) return CommonColors.red.dark;
             if (number > 0) return CommonColors.green.dark;
         }
-        return CommonColors.yellow.main;
+        return CommonColors.gray.main;
     };
     const title = "Print/POSM/PROMO Materials";
     const subTitle = "Type & weight"
@@ -645,7 +616,7 @@ const PSpotSection = ({ response }) => {
                 <PGrid container className="d-flex justify-content-end align-items-center mb-1">
                     <PGrid item xs={12} sm={6} md={8}>
                         <PTypography
-                            labelText={`${getLabel("lbl192")} ( ${subTitle} )`}
+                            labelText={`${getLabel("lbl198")} ( ${subTitle} )`}
                             weight={FontWeight.bold}
                             flag={Labels.fontFlags.normalText}
                         />
@@ -832,7 +803,7 @@ const PSpotSection = ({ response }) => {
                 showCloseIcon={true}
                 maxWidth="sm"
                 actions={
-                    < PGrid className="d-flex align-items-center justify-content-end gap-2" >
+                    <PGrid className="d-flex align-items-center justify-content-end gap-2" >
                         <PButton
                             fullWidth
                             label={getLabel("lbl125")}
@@ -856,38 +827,40 @@ const PSpotSection = ({ response }) => {
                     </PGrid >
                 }
             >
-                <PGrid container className={Labels.margin.mb4}>
+                <PGrid container className={Labels.margin.mb3}>
+                    <PDropdown
+                        label={`${"Material"} ${Labels.symbols.required}`}
+                        name={"material"}
+                        value={formData.material}
+                        options={formDataList.bindMaterial}
+                        onChange={handleChange}
+                        width={100}
+                        disabled={true}
+                        helperText={errors?.material}
+                        flag={Labels.flag.auto}
+
+                    />
+                </PGrid>
+                <PGrid container className={Labels.margin.mb3}>
+                    <PDropdown
+                        label="Type *"
+                        name={"type"}
+                        value={formData.type}
+                        options={formDataList.environmentalType}
+                        onChange={handleChange}
+                        width={100}
+                        disabled={true}
+                        helperText={errors?.type}
+                        flag={Labels.flag.auto}
+                    />
+                </PGrid>
+                <PGrid container className={Labels.margin.mb3}>
                     <PGrid item xs={12} sm={12} md={12}>
-                        <PDropdown
-                            label={`${"Material"} ${Labels.symbols.required}`}
-                            name={"material"}
-                            value={formData.material}
-                            options={formDataList.bindMaterial}
-                            onChange={handleChange}
-                            width={100}
-                            disabled={true}
-                            helperText={errors?.material}
-                            sx={{ mt: 3 }}
-                            flag={Labels.flag.auto}
-                        />
-                        <PDropdown
-                            label="Type *"
-                            name={"type"}
-                            value={formData.type}
-                            options={formDataList.environmentalType}
-                            onChange={handleChange}
-                            width={100}
-                            disabled={true}
-                            helperText={errors?.type}
-                            flag={Labels.flag.auto}
-                            sx={{ mt: 3 }}
-                        />
                         <PTextField
                             label="Weight *"
                             name={"weight"}
                             value={formData.weight}
                             onChange={handleChange}
-                            //width={10}
                             helperText={errors?.weight}
                         />
                     </PGrid>
@@ -896,76 +869,65 @@ const PSpotSection = ({ response }) => {
 
             {/* Impact dialog */}
             <PDialog
-                open={formData.openImpact}
-                onClose={() => setFormData((prev) => ({
-                    ...prev,
-                    openImpact: false,
-                }))}
+                open={formData.impact}
+                onClose={() =>
+                    setFormData((prev) => ({
+                        ...prev,
+                        impact: false,
+                    }))
+                }
                 showCloseIcon={true}
-                title="Environmental Impact Explanation"
+                title={formDataList.impactDetails?.title}
                 maxWidth="sm"
             >
-                {environmentalImpact.map((item, index) => (
-                    <Box key={index} sx={{ mb: 2 }}>
-                        <PTypography
-                            labelText={item.heading}
-                            weight={FontWeight.bold}
-                            flag={Labels.fontFlags.errorLbl}
-                            sx={{ mb: 0.5 }}
-                        />
-                        <PTypography
-                            labelText={item.value}
-                            flag={Labels.fontFlags.smallText}
-                            color={CommonColors.grey.main}
-                            weight={FontWeight.bold}
-                        />
-                    </Box>
-                ))}
-            </PDialog>
-
-            {/* enviromentImpact dialog */}
-            <PDialog
-                open={formData.enImpact}
-                onClose={() => setFormData((prev) => ({
-                    ...prev,
-                    enImpact: false,
-                }))}
-                showCloseIcon={true}
-                title="Environmental Impact & Savings Summary"
-                maxWidth="sm"
-            >
-                {comparativeEnvironmentalImpact.map((item, index) => (
-                    <Box key={index} sx={{ mb: 2 }}>
-                        <Box key={index} sx={{ mb: 0.5 }}>
-                            <PTypography
-                                labelText={item.heading}
-                                weight={FontWeight.bold}
-                                flag={Labels.fontFlags.errorLbl}
-                                sx={{ mb: 0.5 }}
-                            />
-                        </Box>
-
-                        {item.content.map((text, contentIndex) => (
-                            <Box key={contentIndex} sx={{ mb: 0.5 }}>
+                {(formDataList.impactDetails?.lines ?? []).length > 0 ? (
+                    formDataList.impactDetails.lines.map((line, index) => (
+                        <Box key={index} sx={{ mb: 2 }}>
+                            <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
                                 <PTypography
-                                    labelText={text}
-                                    flag={Labels.fontFlags.smallText}
-                                    color={contentIndex === 2 ? getCompareColor(text) : CommonColors.grey.main}
+                                    labelText={line.title}
                                     weight={FontWeight.bold}
-                                    sx={{
-                                        lineHeight: 1.8,
-                                        fontStyle: contentIndex === item.content.length - 1 ? "italic" : "normal"
-                                    }}
+                                    flag={Labels.fontFlags.errorLbl}
+                                    sx={{ lineHeight: 1.8, mb: 2 }}
+                                />
+
+                                <PTypography
+                                    labelText={line.environmental}
+                                    color={CommonColors.grey.main}
+                                    flag={Labels.fontFlags.smallText}
+                                    weight={FontWeight.bold}
+                                    sx={{ lineHeight: 1.8, fontStyle: "normal" }}
+                                />
+
+                                <PTypography
+                                    labelText={line.comparative}
+                                    color={CommonColors.grey.main}
+                                    flag={Labels.fontFlags.smallText}
+                                    weight={FontWeight.bold}
+                                    sx={{ lineHeight: 1.8, fontStyle: "normal" }}
+                                />
+
+                                <PTypography
+                                    labelText={line.saving}
+                                    color={getCompareColor(line.color)}
+                                    weight={FontWeight.bold}
+                                    flag={Labels.fontFlags.smallText}
+                                    sx={{ lineHeight: 1.8, fontStyle: "italic" }}
                                 />
                             </Box>
-                        ))}
-
-                    </Box>
-                ))}
-            </PDialog>
+                        </Box>
+                    ))
+                ) : (
+                    <PTypography
+                        labelText="No data available"
+                        color={CommonColors.grey.main}
+                        flag={Labels.fontFlags.smallText}
+                    />
+                )}
+            </PDialog >
 
             {/* reason dialog */}
-            <PDialog
+            < PDialog
                 open={formData.nonCompare}
                 onClose={() => setFormData((prev) => ({
                     ...prev,
@@ -1014,7 +976,7 @@ const PSpotSection = ({ response }) => {
                         />
                     </PGrid>
                 </PGrid>
-            </PDialog>
+            </PDialog >
 
         </>
 

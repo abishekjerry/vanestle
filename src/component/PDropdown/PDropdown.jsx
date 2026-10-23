@@ -91,6 +91,12 @@ const PDropdown = ({ name = "", label, value = "", onChange, options = [], requi
         borderWidth: "1.5px",
         boxShadow: "0 0 0 3px rgba(98,188,216,0.15)",
       },
+
+      "& .MuiAutocomplete-popupIndicator": {
+        pointerEvents: readOnly ? "none" : "auto",
+        cursor:  readOnly ? "default" : "pointer",
+        opacity: readOnly ? 0.5 : 1,
+      },
     },
 
     // Normal Select text alignment
