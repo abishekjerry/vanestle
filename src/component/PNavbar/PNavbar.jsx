@@ -41,34 +41,38 @@ const PNavbar = ({ name = "User", email = "", avatar = "", notificationCount = 0
     anchorEl: null,
     type: null
   });
-
   const menuItems = [
     ...([1, 2, 3].includes(menuId)
       ? [{
         name: menuId === 1 ? "Enquiry" : menuId === 2 ? "E-Bidding" : "E-Catalogue",
         route: labelRoutes.eqDashboard,
         menuId: menuId,
-        submenu: [
-          {
-            name: menuId === 1 ? "View all jobs" : menuId === 2 ? "View Bids" : "View Catalogue",
-            route: labelRoutes.eqDashboard,
-            menuId: menuId,
-          },
-          {
-            name: menuId === 1 ? "New Enquiry" : menuId === 2 ? "New Bid" : "New Catalogue",
-            route: labelRoutes.clientInfo,
-            menuId: menuId,
-          },
-        ],
+        ...([Labels.userType.agency].includes(userType?.toLowerCase())
+          ? {
+            submenu: [
+              {
+                name: menuId === 1 ? "View all jobs" : menuId === 2 ? "View Bids" : "View Catalogue",
+                route: labelRoutes.eqDashboard,
+                menuId: menuId,
+              },
+              {
+                name: menuId === 1 ? "New Enquiry" : menuId === 2 ? "New Bid" : "New Catalogue",
+                route: labelRoutes.clientInfo,
+                menuId: menuId,
+              },
+            ]
+          } : {}),
       }]
       : []
     ),
-    {
+    ...([Labels.userType.agency].includes(userType?.toLowerCase()) ? [{
       name: getLabel("lbl150"),
       route: labelRoutes.report,
       menuId: menuId,
-    },
-    ...([1].includes(menuId)
+    }]
+      : []
+    ),
+    ...([1].includes(menuId) && [Labels.userType.agency].includes(userType?.toLowerCase())
       ? [{
         name: "Catalog Draft Entries",
         route: labelRoutes.eqDashboard,
@@ -139,41 +143,17 @@ const PNavbar = ({ name = "User", email = "", avatar = "", notificationCount = 0
     // },
   };
   return (
-    <AppBar
-      position="sticky"
-      elevation={0}
-      sx={{
-        backgroundColor: "white",
-        padding: "1rem 0"
+    <AppBar position="sticky" elevation={0} sx={{ backgroundColor: "white", padding: "1rem 0" }} >
+      <Toolbar sx={{
+        justifyContent: "space-between", position: "relative", minHeight: 50, border: "0px solid #ccc",
+        px: 0,
+        "@media (min-width:600px)": { px: 0, },
       }}
-    >
-      <Toolbar
-        sx={{
-          justifyContent: "space-between",
-          position: "relative",
-          minHeight: 50,
-          border: "0px solid #ccc",
-          px: 0,
-          "@media (min-width:600px)": {
-            px: 0,
-          },
-        }}
       >
-
-        {/* LEFT SECTION */}
-        {/* <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <IconButton onClick={toggleSidebar}>
-            <FaBars size={20} />
-          </IconButton>
-
-          <Box className="mt-1">
-            <img src={Logo} alt="Logo" style={{ height: 55,width: 60 }} />
-          </Box>
-        </Box> */}
         <Box>
           <Link to={labelRoutes.dashboard}><img src={VALogo} alt="Logo" style={{ height: 69, width: 65 }} /></Link>
         </Box>
-        {/* CENTER SECTION */}
+
         {!isDashboard && (<Box className="navbar-menu">
           {menuItems.map((item, index) => (
             <Box key={`${item.menuId}-${item.route}-${index}`}
@@ -247,9 +227,9 @@ const PNavbar = ({ name = "User", email = "", avatar = "", notificationCount = 0
 
             </Box>
           ))}
-        </Box>)}
+        </Box>
+        )}
 
-        {/* RIGHT SECTION */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 2, marginRight: "1.25rem" }}>
 
           {/* NOTIFICATION */}
@@ -286,8 +266,6 @@ const PNavbar = ({ name = "User", email = "", avatar = "", notificationCount = 0
           >
             <Language fontSize="small" />
           </IconButton>
-
-
 
           {/* PROFILE */}
           <Paper
@@ -350,19 +328,12 @@ const PNavbar = ({ name = "User", email = "", avatar = "", notificationCount = 0
         </Box>
       </Toolbar>
 
-      {/* PROFILE MENU */}
       <Menu
         anchorEl={menuState.anchorEl}
         open={open && menuState.type === "profile"}
         onClose={handleCloseMenu}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "right"
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right"
-        }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
         PaperProps={{ onMouseLeave: handleCloseMenu, sx: { mt: 1.5 } }}
       >
         <MenuItem onClick={handleLogout}>
@@ -373,7 +344,6 @@ const PNavbar = ({ name = "User", email = "", avatar = "", notificationCount = 0
         </MenuItem>
       </Menu>
 
-      {/* LANGUAGE MENU */}
       <Menu
         anchorEl={menuState.anchorEl}
         open={open && menuState.type === "language"}

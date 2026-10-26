@@ -18,6 +18,7 @@ import PTypography from "../../component/PTypography/PTypography";
 import { FontWeight } from "../../utils/constants/fonts";
 import { useLanguage } from "../../utils/constants/language";
 import { useSelector } from "react-redux";
+import { CommonColors } from "../../utils/constants/colors";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -50,14 +51,14 @@ const Dashboard = () => {
     },
     ...(userType?.toLowerCase() === Labels.userType.agency
       ? [
-    {
-      title: "RePORT",
-      icon: <BarChartIcon />,
-      iconBg: "#4f46e5",
-      route: labelRoutes.report,
+        {
+          title: "RePORT",
+          icon: <BarChartIcon />,
+          iconBg: "#4f46e5",
+          route: labelRoutes.report,
           menuId: 4,
-      //showNavIcon: true
-    }
+          //showNavIcon: true
+        }
       ]
       : [])
   ];
@@ -66,20 +67,20 @@ const Dashboard = () => {
   const defaultCardProps = { titleSize: 48 };
   return (
     <>
-        <PGrid container className= {`${Labels.margin.mb4}`} style={{ "borderBottom": "2px solid #2F9590", "marginTop":"5rem" }}>
-          {apps.map((app, index) => (
-            <PGrid
-              key={index}
-              item
-                style={{ "borderTop": "2px solid #2F9590" }}
-            >
-              <PDashboardList key={index} {...defaultCardProps} {...app} />
-            </PGrid>
-          ))}
-        </PGrid>
-        
+      <PGrid container className={`${Labels.margin.mb4}`} style={{ "borderBottom": "2px solid #2F9590", "marginTop": "5rem" }}>
+        {apps.map((app, index) => (
+          <PGrid
+            key={index}
+            item
+            style={{ "borderTop": "2px solid #2F9590" }}
+          >
+            <PDashboardList key={index} {...defaultCardProps} {...app} />
+          </PGrid>
+        ))}
+      </PGrid>
+
     </>
-    
+
 
   );
 };

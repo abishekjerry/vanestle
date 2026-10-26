@@ -231,10 +231,10 @@ const PSpotSection = ({ response }) => {
 
     const renderViewActions = (row, flag = "") => {
         let data = null;
-        if (flag == true && row.type == "Main") {
+        if (["impact"].includes(flag) && row.type == "Main") {
             data = formDataList.comparativeImpactMaterial.find(item => item.id == row.id)
         }
-        else if (flag == true && row.type == "Package") {
+        else if (["impact"].includes(flag) && row.type == "Package") {
             data = formDataList.packageComparativeImpact.find(item => item.id == row.id)
         }
         data = data ?? row;

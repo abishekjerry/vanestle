@@ -433,7 +433,6 @@ const ProjectEnquiry = () => {
     const sections = getSummarySections({ menuId, lineItems, getLabel });
 
     //Edit & cancel section function
-
     const handleSlaChange = useCallback((data) => {
         setDynamicData(prev => {
             if (JSON.stringify(prev) === JSON.stringify(data)) {
@@ -614,7 +613,6 @@ const ProjectEnquiry = () => {
     };
 
     //Project Saving Functionlity
-
     const handleProjectInputChange = (data, Id, enquiryId, field) => {
         setFormDataList(prev => ({
             ...prev,
@@ -1236,7 +1234,7 @@ const ProjectEnquiry = () => {
                                 }}
                                 width={76}
                                 height={43}
-                                disabled = {formData.statusId >= 18}
+                                disabled={formData.statusId >= 18 || userType?.toLowerCase() !== Labels.userType.agency}
                             />
                         </Box>
                     </PGrid>
@@ -1598,7 +1596,6 @@ const ProjectEnquiry = () => {
 
                 {formData.activeTab === "SPOT" && (
                     <div>
-                        
                         <PSpotSection response={formDataList.materialUsed} />
                         <PGrid container className={Labels.margin.mt4}>
                             <PGrid item xs={12} sm={6} md={6}>
@@ -1828,15 +1825,7 @@ const ProjectEnquiry = () => {
                                     }}
                                 >
                                     {tableLoading.projectSavings && (
-                                        <CircularProgress
-                                            size={24}
-                                            sx={{
-                                                position: "absolute",
-                                                top: "50%",
-                                                left: "50%",
-                                                zIndex: 1,
-                                            }}
-                                        />
+                                        <CircularProgress size={24} sx={{ position: "absolute", top: "50%", left: "50%", zIndex: 1, }} />
                                     )}
                                     <PGrid container className="d-flex align-items-center justify-content-between mb-3">
                                         <PGrid item xs={12} sm={6} md={6}>
@@ -2007,15 +1996,7 @@ const ProjectEnquiry = () => {
                                 {[3, 4, 5].includes(formData.statusId) && (
                                     <div className={Labels.margin.mb3}>
                                         {tableLoading.approveQuotation && (
-                                            <CircularProgress
-                                                size={24}
-                                                sx={{
-                                                    position: "absolute",
-                                                    top: "50%",
-                                                    left: "50%",
-                                                    zIndex: 1,
-                                                }}
-                                            />
+                                            <CircularProgress size={24} sx={{ position: "absolute", top: "50%", left: "50%", zIndex: 1, }} />
                                         )}
                                         <PGrid container className="d-flex align-items-center justify-content-between mb-3">
                                             <PGrid item xs={12} sm={6} md={6}>
@@ -2170,9 +2151,8 @@ const ProjectEnquiry = () => {
                             <PGrid item xs={12} sm={6} md={6}>
                                 <PTypography
                                     labelText={getLabel("lbl247")}
-                                    flag={Labels.fontFlags.subHeader}
-                                    color={CommonColors.blue.main}
-                                    weight={FontWeight.bold}
+                                    flag={Labels.fontFlags.header}
+                                    weight={FontWeight.regular}
                                 />
                                 <PTypography
                                     labelText={getLabel("lbl248")}
@@ -2204,9 +2184,8 @@ const ProjectEnquiry = () => {
                             <PGrid item xs={12} sm={6} md={6}>
                                 <PTypography
                                     labelText={getLabel("lbl249")}
-                                    flag={Labels.fontFlags.subHeader}
-                                    color={CommonColors.blue.main}
-                                    weight={FontWeight.bold}
+                                    flag={Labels.fontFlags.header}
+                                    weight={FontWeight.regular}
                                 />
                             </PGrid>
                         </PGrid>
@@ -2221,7 +2200,7 @@ const ProjectEnquiry = () => {
                             <PGrid item xs={12} sm={12} md={12} className="d-flex justify-content-end gap-2">
                                 <PButton
                                     label={getLabel("lbl250")}
-                                    variant="contained"
+                                    variant="outlined"
                                     color={CommonColors.grey.main}
                                     onClick={(e) => handleQuotation(e, 6)}
                                     width={250}
@@ -2229,9 +2208,10 @@ const ProjectEnquiry = () => {
                                 <PButton
                                     label={getLabel("lbl251")}
                                     variant="contained"
-                                    color={CommonColors.green.main}
+                                    color={CommonColors.dark_blue}
                                     onClick={(e) => handleQuotation(e, 4)}
                                     width={250}
+                                    startIcon={<img src={arrow} alt="arrow" className="icon" />}
                                 />
                             </PGrid>
                         </PGrid>

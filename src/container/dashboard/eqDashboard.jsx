@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import { useState, useEffect, useMemo, lazy, Suspense, useRef } from "react";
 import { Box, IconButton, Tooltip, Skeleton } from "@mui/material";
 import PDropdown from "../../component/PDropdown/PDropdown";
 import PDatepicker from "../../component/PDatepicker/PDatepicker";
@@ -48,6 +48,7 @@ import MoveToInboxOutlinedIcon from "@mui/icons-material/MoveToInboxOutlined";
 import PrintOutlinedIcon from "@mui/icons-material/PrintOutlined";
 import { userDetails } from "../../redux/actionType/actionType";
 import { useDispatch, useSelector } from "react-redux";
+import { CommonColors } from "../../utils/constants/colors";
 const EqDashboard = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -60,6 +61,7 @@ const EqDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [chartOrginalData, setChartOrginalData] = useState([]);
   const { countryID, role, userName, userType, menuId, userID } = useSelector((state) => state.userDetails.user);
+  const fileInputRef = useRef(null);
   const [formData, setFormData] = useState({
     clientName: "",
     country: "",
@@ -131,7 +133,7 @@ const EqDashboard = () => {
           date: item.serverTime,
           id: item.id,
           stepID: item.stepId,
-          clientId : item.clientId
+          clientId: item.clientId
         }));
         setRows(formattedRows);
         const formattedChartData = (data.summary?.jobStatus || []).map(
@@ -290,9 +292,9 @@ const EqDashboard = () => {
 
   const supplierCards = [
     {
-      title: getLabel("lbl220"),
+      title: getLabel("lbl207"),
       value: summary.quoteproposed || 0,
-      subtitle: getLabel("lbl219"),
+      subtitle: getLabel("lbl218"),
       iconColor: Labels.primary,
       icon: <LocalOfferIcon />,
       statusId: 3,
@@ -301,9 +303,9 @@ const EqDashboard = () => {
       position: "start",
     },
     {
-      title: getLabel("lbl220"),
+      title: getLabel("lbl208"),
       value: summary.newrfq || 0,
-      subtitle: getLabel("lbl218"),
+      subtitle: getLabel("lbl219"),
       iconColor: Labels.primary,
       icon: <MoveToInboxIcon />,
       statusId: 24,
@@ -312,7 +314,7 @@ const EqDashboard = () => {
       position: "end",
     },
     {
-      title: getLabel("lbl220"),
+      title: getLabel("lbl209"),
       value: summary.invites || 0,
       subtitle: getLabel("lbl220"),
       iconColor: Labels.primary,
@@ -393,9 +395,9 @@ const EqDashboard = () => {
   ];
 
   const layout = [
-    { id: 'col-1', cards: cardData.slice(0, 1) }, // Card A
-    { id: 'col-2', cards: cardData.slice(1, 3) }, // Cards B & C
-    { id: 'col-3', cards: cardData.slice(3, 4) }, // Card D
+    { id: 'col-1', cards: cardData.slice(0, 1) },
+    { id: 'col-2', cards: cardData.slice(1, cardData.length - 1) },
+    { id: 'col-3', cards: cardData.slice(-1) },
   ];
 
   const chartOptions = [
@@ -504,7 +506,7 @@ const EqDashboard = () => {
       user: "",
       search: "",
       status: "",
-      clientName : ""
+      clientName: ""
     }));
 
     setChartData(chartOrginalData);
@@ -588,8 +590,21 @@ const EqDashboard = () => {
   const handleRedirect = () => {
     menuId === 3 ? window.open(Account_API.Echo, "_blank") : navigate(labelRoutes.clientInfo);
   };
-  // const Iconexport = () => (
-  //   <img
+
+  const handleDownload = (e) => {
+
+  };
+
+  const handleUpload = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+    }
+  };
+
   const eProcurement = {
     1: getLabel("lbl19"),
     2: getLabel("lbl223"),
@@ -605,7 +620,7 @@ const EqDashboard = () => {
   ];
 
   const stepRoutes = {
-    //1: labelRoutes.clientInfo,
+    0: labelRoutes.clientInfo,
     1: labelRoutes.enquiryDetails,
     2: labelRoutes.lineItems,
     3: labelRoutes.suppliers,
@@ -630,71 +645,92 @@ const EqDashboard = () => {
       <Box sx={{ py: 3 }}>
         <PGrid item xs={12} sm={6} md={7} style={{ paddingBottom: "30px" }}>
           <PTypography
-            labelText={`${getLabel("lbl03")}`}
+            labelText={[Labels.userType.client].includes(userType?.toLowerCase()) ? "Project Hub" : `${getLabel("lbl03")}`}
             weight={FontWeight.regular}
             flag={"big"}
             style={{ fontFamily: "'Montserrat', Tahoma, Geneva, Verdana, sans-serif", }}
           />
         </PGrid>
-        {/* Welcome Back, demouser.sg <PGrid container className={Labels.margin.mb3}>
-            <PGrid item xs={12} sm={6} md={7}>
-              <PTypography
-                labelText={`${getLabel("lbl08")}, ${localStorage.getItem("user")}`}
-                weight={FontWeight.bold}
-                flag={Labels.fontFlags.subHeader}
-                color={CommonColors.red}
-                style={{ fontFamily: "'Montserrat', Tahoma, Geneva, Verdana, sans-serif" }}
-              />
-            </PGrid>
-          </PGrid> */}
 
-        <PGrid container className={`eqdashboard-wrapper ${Labels.margin.mb5}`}>
-
-          {loading ? (
-            cardData.map((card, index) => (
-              <PGrid
-                key={`skeleton-${index}`}
-                item
-                xs={12}
-                md={4}
-                lg={lgSizes[index]}
+        <PGrid container className={`eqdashboard-wrapper ${Labels.margin.mb3}`}>
+          {layout.map((col, index) => (
+            <PGrid key={col.id} item xs={12} md={mdSizes[index]} lg={lgSizes[index]}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  height: "100%",
+                  gap: "16px",
+                }}
               >
-                <Skeleton
-                  variant="rectangular"
-                  height={100}
-                  sx={{ borderRadius: 0 }}
-                />
-              </PGrid>
-            ))
-          ) : (
-            layout.map((col, index) => (
-              <PGrid
-                key={col.id}
-                item
-                xs={12}
-                md={mdSizes[index]}
-                lg={lgSizes[index]}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    height: "100%",
-                    gap: "16px",
-                  }}
-                >
-                  {col.cards.map((card, cardIndex) => (
+                {loading
+                  ? col.cards.map((card, cardIndex) => (
+                    <Skeleton
+                      key={`skeleton-${col.id}-${cardIndex}`}
+                      variant="rectangular"
+                      height={150}
+                      sx={{ borderRadius: 0 }}
+                    />
+                  ))
+                  : col.cards.map((card, cardIndex) => (
                     <PDashboardCard
                       key={`${col.id}-${cardIndex}`}
                       {...card}
                       onClick={() => handleFilter(card.statusId)}
                     />
                   ))}
-                </div>
-              </PGrid>
-            ))
-          )}
+              </div>
+            </PGrid>
+          ))}
         </PGrid>
+
+        {[Labels.role.admin].includes(userType?.toLowerCase()) && (
+          <>
+            {loading ? (
+              <Skeleton variant="rectangular" height={50} sx={{ borderRadius: 2 }} />
+            ) : (
+              <>
+                {/* upload & download */}
+                <PGrid container spacing={2} className={Labels.margin.mb3}>
+                  <PGrid item xs={12} sm={12} md={12} lg={9}>
+                    <Box sx={{ border: "1px solid #66658A", borderRadius: "6px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", padding: "10px 20px" }}>
+                      <PTypography
+                        labelText="For Bulk Upload"
+                        flag={Labels.fontFlags.subHeader}
+                        color={CommonColors.dark_blue}
+                      />
+
+                      <Box display="flex" alignItems="center" justifyContent="flex-end" gap={2}>
+                        <PButton
+                          label="Download template"
+                          variant="contained"
+                          onClick={handleDownload}
+                          width={300}
+                          height={40}
+                          startIcon={<img src={arrow} alt="arrow" className="icon" />}
+                        />
+                        <PButton
+                          label="Import Excel template"
+                          variant="outlined"
+                          onClick={handleUpload}
+                          width={250}
+                          height={40}
+                        />
+                        <input
+                          type="file"
+                          accept=".xlsx,.xls"
+                          ref={fileInputRef}
+                          style={{ display: "none" }}
+                          onChange={handleFileChange}
+                        />
+                      </Box>
+                    </Box>
+                  </PGrid>
+                </PGrid>
+              </>
+            )}
+          </>
+        )}
 
         <PGrid container spacing={2} className={Labels.margin.mb3} style={{ display: "flex", alignItems: "stretch" }}>
           <PGrid item xs={12} lg={8} xl={9} style={{ display: "flex", flexDirection: "column" }}>
@@ -703,39 +739,35 @@ const EqDashboard = () => {
             </PGrid>
 
             <PGrid container className={Labels.margin.mb3} spacing={0}>
-              <PGrid item xs={12} sm={6} md={4}>
-                {/* <PDropdown
-                  label={getLabel("lbl09")}
-                  value={formData.country}
-                  onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                  options={formDataList.country}
-                  width={Labels.fontSize.xxxxl}
-                  flag={Labels.flag.auto}
-                  readOnly={role === Labels.role.admin ? false : true}
-                  labelMode="inside"
-                /> */}
-                <PDropdown
-                  label={getLabel("lbl28")}
-                  value={formData.clientName}
-                  onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
-                  options={formDataList.clientName}
-                  width={Labels.fontSize.xxxxl}
-                  flag={Labels.flag.auto}
-                  readOnly={role === Labels.role.admin ? false : true}
-                  labelMode="inside"
-                />
-              </PGrid>
-              <PGrid item xs={12} sm={6} md={4}>
-                <PDropdown
-                  label={getLabel("lbl10")}
-                  value={formData.user}
-                  onChange={(e) => setFormData({ ...formData, user: e.target.value })}
-                  options={formDataList.user}
-                  width={Labels.fontSize.xxxxl}
-                  //flag={Labels.flag.auto}
-                  labelMode="inside"
-                />
-              </PGrid>
+              {[Labels.userType.agency, Labels.userType.client].includes(userType?.toLowerCase()) && (
+                <PGrid item xs={12} sm={6} md={4}>
+                  <PDropdown
+                    label={getLabel("lbl28")}
+                    value={formData.clientName}
+                    onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
+                    options={formDataList.clientName}
+                    width={Labels.fontSize.xxxxl}
+                    flag={Labels.flag.auto}
+                    readOnly={role === Labels.role.admin ? true : false}
+                    labelMode="inside"
+                  />
+                </PGrid>
+              )}
+
+              {[Labels.userType.agency].includes(userType?.toLowerCase()) && (
+                <PGrid item xs={12} sm={6} md={4}>
+                  <PDropdown
+                    label={getLabel("lbl10")}
+                    value={formData.user}
+                    onChange={(e) => setFormData({ ...formData, user: e.target.value })}
+                    options={formDataList.user}
+                    width={Labels.fontSize.xxxxl}
+                    labelMode="inside"
+                  />
+                </PGrid>
+
+              )}
+
               <PGrid item xs={12} sm={6} md={4} style={{ display: "flex" }}>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   {icons.slice(1).map((item, index) => (
@@ -770,11 +802,7 @@ const EqDashboard = () => {
                 {loading ? (
                   <Skeleton variant="rectangular" height={300} sx={{ borderRadius: 2 }} />
                 ) : (
-                  <PTable
-                    columns={columns}
-                    rows={data}
-                    onClick={(row) => { handleRoute(row) }}
-                  />
+                  <PTable columns={columns} rows={data} onClick={(row) => { handleRoute(row) }} />
                 )}
               </div>
             </PGrid>
@@ -828,13 +856,7 @@ const EqDashboard = () => {
               variant={Labels.contained}
               onClick={handleSendChoose}
               width={180}
-              startIcon={
-                <img
-                  src={arrow}
-                  alt="arrow"
-                  className="icon"
-                />
-              }
+              startIcon={<img src={arrow} alt="arrow" className="icon" />}
             />
           </>
         }
@@ -864,7 +886,7 @@ const EqDashboard = () => {
           </PGrid>
         </PGrid>
       </PDialog>
-    </div>
+    </div >
   );
 };
 

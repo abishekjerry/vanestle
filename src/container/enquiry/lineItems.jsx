@@ -909,7 +909,7 @@ const LineItems = () => {
                                         name={Labels.lineItems.incoterm}
                                         options={formDataList.incoterm}
                                         flag={Labels.flag.auto}
-                                        readOnly = {lineItems.length > 2}
+                                        readOnly={lineItems.length >= 2}
                                     />
                                 )}
                             </PGrid>
