@@ -79,8 +79,8 @@ const PSpotSection = ({ response }) => {
     const actionIconSx = {
         color: "#6b7280",
         cursor: "pointer",
-        padding: "4px",
-        borderRadius: "4px",
+        padding: "1px",
+        borderRadius: "3px",
         transition: "all 0.2s ease",
         "&:hover": {
             color: "#374151",
@@ -197,7 +197,7 @@ const PSpotSection = ({ response }) => {
     const renderActions = (row) => {
         const flag = formData.id === row.id;
         return (
-            <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
+            <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
                 {flag ? (
                     <>
                         <Tooltip title="Save" arrow>
@@ -239,7 +239,7 @@ const PSpotSection = ({ response }) => {
         }
         data = data ?? row;
         return (
-            <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
+            <div style={{ display: "flex", gap: "15px", alignItems: "center" }}>
 
                 <Tooltip title="View" arrow>
                     <VisibilityOutlinedIcon sx={actionIconSx}
@@ -549,8 +549,8 @@ const PSpotSection = ({ response }) => {
     const getCompareColor = (value) => {
         const text = String(value ?? "").toLowerCase().trim();
         const number = Number(value);
-        if (text == "red") return CommonColors.red.main;
-        if (text == "green") return CommonColors.green.main;
+        if (text == "red") return CommonColors.red.dark;
+        if (text == "green") return CommonColors.green.dark;
 
         if (text !== "" && !Number.isNaN(number)) {
             if (number < 0) return CommonColors.red.dark;
@@ -878,7 +878,7 @@ const PSpotSection = ({ response }) => {
                 }
                 showCloseIcon={true}
                 title={formDataList.impactDetails?.title}
-                maxWidth="sm"
+                maxWidth="md"
             >
                 {(formDataList.impactDetails?.lines ?? []).length > 0 ? (
                     formDataList.impactDetails.lines.map((line, index) => (
@@ -887,31 +887,31 @@ const PSpotSection = ({ response }) => {
                                 <PTypography
                                     labelText={line.title}
                                     weight={FontWeight.bold}
-                                    flag={Labels.fontFlags.errorLbl}
+                                    flag={Labels.fontFlags.xs}
                                     sx={{ lineHeight: 1.8, mb: 2 }}
                                 />
 
                                 <PTypography
                                     labelText={line.environmental}
                                     color={CommonColors.grey.main}
-                                    flag={Labels.fontFlags.smallText}
-                                    weight={FontWeight.bold}
+                                    flag={Labels.fontFlags.normalText}
+                                    //weight={FontWeight.bold}
                                     sx={{ lineHeight: 1.8, fontStyle: "normal" }}
                                 />
 
                                 <PTypography
                                     labelText={line.comparative}
                                     color={CommonColors.grey.main}
-                                    flag={Labels.fontFlags.smallText}
-                                    weight={FontWeight.bold}
-                                    sx={{ lineHeight: 1.8, fontStyle: "normal" }}
+                                    flag={Labels.fontFlags.normalText}
+                                    //weight={FontWeight.bold}
+                                   sx={{ lineHeight: 1.8, fontStyle: "normal" }}
                                 />
 
                                 <PTypography
                                     labelText={line.saving}
                                     color={getCompareColor(line.color)}
                                     weight={FontWeight.bold}
-                                    flag={Labels.fontFlags.smallText}
+                                    flag={Labels.fontFlags.normalText}
                                     sx={{ lineHeight: 1.8, fontStyle: "italic" }}
                                 />
                             </Box>

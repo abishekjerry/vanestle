@@ -530,7 +530,7 @@ const LineItems = () => {
             Labels.lineItems.tcoApprovalRequired,
             Labels.lineItems.tcoApproved,
             //Labels.lineItems.dictatedJob,
-            Labels.lineItems.itemType,
+            //Labels.lineItems.itemType,
             Labels.lineItems.itemName,
             Labels.lineItems.itemNameDescription,
 
@@ -864,7 +864,21 @@ const LineItems = () => {
                                     flag={Labels.flag.auto}
                                 />
                             </PGrid>
-                            <PGrid item xs={12} sm={6} md={4}>
+                            {[3].includes(formData.category) && (
+                                <PGrid item xs={12} sm={6} md={4}>
+                                    <PDropdown
+                                        label={`${getLabel("lbl152")}${Labels.symbols.required}`}
+                                        value={formData.incoterm}
+                                        onChange={handleChange}
+                                        helperText={errors?.incoterm}
+                                        name={Labels.lineItems.incoterm}
+                                        options={formDataList.incoterm}
+                                        flag={Labels.flag.auto}
+                                        readOnly={lineItems.length >= 2}
+                                    />
+                                </PGrid>
+                            )}
+                            {/* <PGrid item xs={12} sm={6} md={4}>
                                 <PDropdown
                                     label={`${getLabel("lbl64")}${Labels.symbols.required}`}
                                     value={formData.itemType}
@@ -875,7 +889,7 @@ const LineItems = () => {
                                     flag={Labels.flag.auto}
                                 />
 
-                            </PGrid>
+                            </PGrid> */}
                         </PGrid>
                         {/* <PGrid container className={Labels.margin.mb4}>
                                 <PGrid item xs={12} sm={6} md={4}>
@@ -900,18 +914,6 @@ const LineItems = () => {
                                     name={Labels.lineItems.itemName}
                                     sx={{ mb: 2 }}
                                 />
-                                {[3].includes(formData.category) && (
-                                    <PDropdown
-                                        label={`${getLabel("lbl152")}${Labels.symbols.required}`}
-                                        value={formData.incoterm}
-                                        onChange={handleChange}
-                                        helperText={errors?.incoterm}
-                                        name={Labels.lineItems.incoterm}
-                                        options={formDataList.incoterm}
-                                        flag={Labels.flag.auto}
-                                        readOnly={lineItems.length >= 2}
-                                    />
-                                )}
                             </PGrid>
                             <PGrid item xs={12} sm={6} md={8}>
                                 <PTextField

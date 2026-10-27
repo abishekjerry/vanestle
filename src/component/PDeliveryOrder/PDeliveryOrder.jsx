@@ -155,7 +155,7 @@ const PDeliveryOrder = (props) => {
                     await props.fetchData();
                     await props.setFormData(prev => ({
                         ...prev,
-                        activeTab: "Delivery Order",
+                        activeTab: "Job Summary",
                     }))
                     await handleCancel();
                     toast(Labels.status.success, response.data);

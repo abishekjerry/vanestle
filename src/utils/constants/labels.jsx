@@ -128,7 +128,7 @@ export const Labels = {
     specifications: "specifications",
     notesComments: "notesComments",
     customizedSpecifications: "customizedSpecifications",
-    
+
     // Quantity
     quantityType: "quantityType",
     quantity: "quantity",
@@ -139,10 +139,11 @@ export const Labels = {
   },
 
   suppliers: {
-    required: "Please select at least one supplier to proceed."
+    required: "Please select at least one supplier to proceed.",
+    caRequired: "Please select at least two suppliers to proceed.",
   },
 
-  report : {
+  report: {
     clientName: "clientName",
     typeOfReport: "typeOfReport",
     country: "country",
@@ -193,13 +194,13 @@ export const Labels = {
     percent: "%"
   },
 
-   buttonLabel: {
-      submit: "Submit",
-      backToLogin: "Back to Login",
-      login: "Sign In",
-      changePassword: "Change Password",
-      reset: "Reset"
-    },
+  buttonLabel: {
+    submit: "Submit",
+    backToLogin: "Back to Login",
+    login: "Sign In",
+    changePassword: "Change Password",
+    reset: "Reset"
+  },
 
   footer: {
     footer: "PMG ASIA PACIFIC PTE LTD. All Rights Reserved"
@@ -213,7 +214,7 @@ export const Labels = {
     Insert: "Insert",
     Update: "Update",
     file: "File",
-    total : "Total"
+    total: "Total"
   },
 
   reportName: {
@@ -249,15 +250,15 @@ export const Labels = {
   },
 
   fontSize: {
-      xxxxs: "10px",
-      xxs: "12px",
-      xs: "14px",
-      sm: "16px",
-      lg: "18px",
-      xl: "28px",
-      xxl: "35px",
-      xxxl: "48px",
-      xxxxl: "100%"
+    xxxxs: "10px",
+    xxs: "12px",
+    xs: "14px",
+    sm: "16px",
+    lg: "18px",
+    xl: "28px",
+    xxl: "35px",
+    xxxl: "48px",
+    xxxxl: "100%"
   },
 
   // Font size flags

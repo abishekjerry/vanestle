@@ -35,7 +35,7 @@ const Suppliers = () => {
     const [search, setSearch] = useState("");
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(true);
-    
+
     const [formDataList, setFormDataList] = useState({
         country: [],
         print: [],
@@ -128,8 +128,9 @@ const Suppliers = () => {
         );
     }
     const data = filteredData;
+    const isCostAvoidance = formDataList.lineItems?.some(item => item.savingstype?.toLowerCase() === "cost avoidance");
     const handleValidationChange = (rows) => {
-        const isValid = rows.length > 0;
+        const isValid = isCostAvoidance ? rows.length >= 2 : rows.length >= 1;
         setFormDataList(prev => ({
             ...prev,
             selectedRows: rows,
@@ -152,7 +153,7 @@ const Suppliers = () => {
 
     const handleSubmit = async (e, flag) => {
         const rows = formDataList.selectedRows || [];
-        const isValid = rows.length > 0;
+        const isValid = isCostAvoidance ? rows.length >= 2 : rows.length >= 1;
         setIsValidation(isValid);
         if (!isValid) {
             setAllowRedirect(false);
@@ -204,9 +205,7 @@ const Suppliers = () => {
                 </PGrid>
                 <PGrid container className={Labels.margin.mb4} >
                     <PGrid item xs={12} sm={12} md={12}>
-                        {/* <PCard> */}
-                        <div style={{background:"#512668", width:"36px", height:"11px"}}></div>
-                        {/* Line Items */}
+                        <div style={{ background: "#512668", width: "36px", height: "11px" }}></div>
                         <PGrid container className={Labels.margin.mb3}>
                             <PTypography
                                 labelText={getLabel("lbl23")}
@@ -222,13 +221,13 @@ const Suppliers = () => {
                             />
                         </PGrid>
                         <PGrid container className={Labels.margin.mb4}>
-                            <PGrid item xs={12} sm={6} md={6} style={{marginTop:"1.5rem"}}>
-                                <PSearch style={{marginTop:"0rem"}} width="100%"  placeholder={"Search a Suplier Name"} onChange={(e) => setSearch(e.target.value)} />
+                            <PGrid item xs={12} sm={6} md={6} style={{ marginTop: "1.5rem" }}>
+                                <PSearch style={{ marginTop: "0rem" }} width="100%" placeholder={"Search a Suplier Name"} onChange={(e) => setSearch(e.target.value)} />
                             </PGrid>
                             <PGrid item xs={12} sm={6} md={3}>
                                 <PDropdown
                                     label={getLabel("lbl09")}
-                                        value={countryName}
+                                    value={countryName}
                                     onChange={(e) => setCountry(e.target.value)}
                                     options={formDataList.country}
                                     width={Labels.fontSize.xxxxl}
@@ -269,18 +268,20 @@ const Suppliers = () => {
                                 <PTable columns={tableHeader} rows={data} showCheckbox={true} isChecked={showSelected} onValidationChange={handleValidationChange} selectedRows={formDataList.selectedRows} />
                             </PGrid>
                         </PGrid>
+                        
                         {!isValidation && (
                             <PGrid container className={Labels.margin.mb4}>
                                 <PGrid item xs={12}>
                                     <PTypography
-                                        labelText={Labels.suppliers.required}
-                                        flag={Labels.fontFlags.smallText}
-                                        color={CommonColors.textError}
+                                        labelText={isCostAvoidance ? Labels.suppliers.caRequired : Labels.suppliers.required}
+                                        flag={Labels.fontFlags.xs}
+                                        color={CommonColors.red.dark}
                                         weight={FontWeight.regular}
                                     />
                                 </PGrid>
                             </PGrid>
                         )}
+
                         <PGrid container className="d-flex align-items-center justify-content-between">
                             <PGrid item xs={12} sm={6} md={8}>
                                 <PButton
@@ -321,8 +322,8 @@ const Suppliers = () => {
                             </PGrid>
                         </PGrid>
                     </PGrid>
-            </PGrid>
-            {/* <PGrid item xs={12} sm={12} md={3}>
+                </PGrid>
+                {/* <PGrid item xs={12} sm={12} md={3}>
                 <PSummary sections={sections} currentStep={4} refreshSummary={fetchData} duplicate={true} lineItems = {formDataList.lineItems}/>
             </PGrid> */}
             </Box>

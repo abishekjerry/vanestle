@@ -148,7 +148,7 @@ const PDropdown = ({ name = "", label, value = "", onChange, options = [], requi
     return (
       <>
         {labelMode === "" && (
-          <Typography style={{ fontSize: "16px", color: "#171717", marginBottom: "8px" }}>
+          <Typography style={{ fontSize: "16px", color: "#171717", marginBottom: "8px",  whiteSpace: "nowrap",  }}>
             {label}
           </Typography>
         )}
@@ -195,7 +195,7 @@ const PDropdown = ({ name = "", label, value = "", onChange, options = [], requi
     >
       {/* {labelMode === "" && ( <InputLabel style={{fontSize:"18px",color:"#171717",marginBottom:"8px"}} shrink={false}>{label}</InputLabel>)} */}
       {labelMode === "" && (
-        <Typography style={{ fontSize: "16px", color: "#171717", marginBottom: "8px" }}>
+        <Typography style={{ fontSize: "16px", color: "#171717", marginBottom: "8px" ,  whiteSpace: "nowrap"}}>
           {label}
         </Typography>
       )}

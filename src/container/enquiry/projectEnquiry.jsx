@@ -210,7 +210,8 @@ const ProjectEnquiry = () => {
 
 
     const iconStyle = {
-        border: createOrderFlag ? "1px solid #e2e8f0" : "1px solid #f90707",
+        //border: createOrderFlag ? "1px solid #e2e8f0" : "1px solid #f90707",
+        border: "1px solid #e2e8f0",
         color: "#64748b",
         "&:hover": { bgcolor: "#f8fafc" },
         width: 48,
@@ -762,6 +763,12 @@ const ProjectEnquiry = () => {
                             activeTab: "RFQ",
                         }))
                     }
+                    else if (flag == 6) {
+                        setFormData(prev => ({
+                            ...prev,
+                            activeTab: "Job Summary",
+                        }))
+                    }
                 }
             }
             else {
@@ -1002,7 +1009,7 @@ const ProjectEnquiry = () => {
             Action: actionFlag,
             invoiceNumber: formData.invoicenumber,
             poNumber: formData.poNo,
-            actualdeliverydate: formData.actualDeliveryDate === undefined ? "" : formData.actualDeliveryDate,
+            actualdeliverydate: formData.actualDeliveryDate,
             raisedDate: formData.raisedDate,
             invoiceDate: "",
             statusId: flag === "order" ? 7 : formData.statusId
@@ -1298,7 +1305,7 @@ const ProjectEnquiry = () => {
                     </PGrid>
                 )}
 
-                {[7, 8].includes(formData.statusId) && !formData.actualDeliveryDate?.trim() && flag && (
+                {[7, 8].includes(formData.statusId) && flag && !formData.actualDeliveryDate?.trim() && (
                     <PGrid container className={Labels.margin.mb3}>
                         <PGrid item xs={12} md={12} sm={8}>
                             <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 2, flexWrap: "wrap" }}>
@@ -1313,6 +1320,16 @@ const ProjectEnquiry = () => {
                         <PGrid item xs={12} md={12} sm={8}>
                             <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 2, flexWrap: "wrap" }}>
                                 <Alert severity="error">Please choose the savings reason and input project savings.</Alert>
+                            </Box>
+                        </PGrid>
+                    </PGrid>
+                )}
+
+                {[false].includes(createOrderFlag) && flag  && (
+                    <PGrid container className={Labels.margin.mb3}>
+                        <PGrid item xs={12} md={12} sm={8}>
+                            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 2, flexWrap: "wrap" }}>
+                                <Alert severity="error">Input D/O No or PO No and select Delivery Order to activate the 'Create Order' Icon.</Alert>
                             </Box>
                         </PGrid>
                     </PGrid>
@@ -1389,7 +1406,7 @@ const ProjectEnquiry = () => {
                                                         </>
                                                     ) : item.label === "D/O No or PO No" && job ? (
                                                         <>
-                                                            <PGrid container>
+                                                            <PGrid container >
                                                                 <PGrid item xs={12} md={6} xl={9}>
                                                                     <PTypography
                                                                         labelText={`${item.label} ${Labels.symbols.required}`}
@@ -1407,9 +1424,7 @@ const ProjectEnquiry = () => {
                                                                 </PGrid>
                                                                 {[6].includes(formData.statusId) && (
                                                                     <PGrid item xs={12} md={6} xl={3} className={Labels.margin.mt4}>
-                                                                        <Tooltip title={createOrderFlag ? "Create Order"
-                                                                            : "Input D/O No or PO No and select Delivery Order to activate the 'Create Order' Icon."} arrow
-                                                                        >
+                                                                        {/* <Tooltip title={createOrderFlag ? "Create Order" : ""} arrow >
                                                                             <IconButton
                                                                                 sx={iconStyle}
                                                                                 onClick={(e) => createOrderFlag ? handleSubmit(e, "order")
@@ -1419,63 +1434,91 @@ const ProjectEnquiry = () => {
                                                                             >
                                                                                 <PostAddIcon />
                                                                             </IconButton>
+                                                                        </Tooltip> */}
+                                                                         <Tooltip title={"Create Order"} arrow >
+                                                                            <IconButton sx={iconStyle}
+                                                                                onClick={(e) => handleSubmit(e, "order")}
+                                                                                disabled={!createOrderFlag && !formData.poNo}
+                                                                            >
+                                                                                <PostAddIcon />
+                                                                            </IconButton>
                                                                         </Tooltip>
                                                                     </PGrid>
                                                                 )}
                                                             </PGrid>
                                                         </>
                                                     ) : formData.statusId > 6 && formData.job && item.label === "PO Order raised Date" ? (
-                                                        <PDatepicker
-                                                            name={"raisedDate"}
-                                                            label={item.label}
-                                                            value={formData.raisedDate}
-                                                            onChange={handleChange}
-                                                            width={100}
-                                                            allowFuture
-                                                        />
+                                                        <>
+                                                            <PTypography
+                                                                labelText={`${item.label}`}
+                                                                weight={FontWeight.bold}
+                                                                flag={Labels.fontFlags.normalText}
+                                                            />
+                                                            <PDatepicker
+                                                                name={"raisedDate"}
+                                                                //label={item.label}
+                                                                value={formData.raisedDate}
+                                                                onChange={handleChange}
+                                                                width={100}
+                                                                allowFuture
+                                                            />
+                                                        </>
                                                     ) : formData.statusId > 6 && formData.job && item.label === "Invoice Number" ? (
-                                                        <PTextField
-                                                            name={"invoicenumber"}
-                                                            label={item.label}
-                                                            value={formData.invoicenumber}
-                                                            onChange={handleChange}
-                                                        />
-                                                    )
-                                                        : formData.statusId > 6 && formData.job && item.label === "Actual Delivery Date" ? (
+                                                        <>
+                                                            <PTypography
+                                                                labelText={`${item.label}`}
+                                                                weight={FontWeight.bold}
+                                                                flag={Labels.fontFlags.normalText}
+                                                            />
+                                                            <PTextField
+                                                                name={"invoicenumber"}
+                                                                //label={item.label}
+                                                                value={formData.invoicenumber}
+                                                                onChange={handleChange}
+                                                            />
+                                                        </>
+
+                                                    ) : formData.statusId > 6 && formData.job && item.label === "Actual Delivery Date" ? (
+                                                        <>
+                                                            <PTypography
+                                                                labelText={`${item.label} ${Labels.symbols.required}`}
+                                                                weight={FontWeight.bold}
+                                                                flag={Labels.fontFlags.normalText}
+                                                            />
                                                             <PDatepicker
                                                                 name={"actualDeliveryDate"}
-                                                                label={`${item.label} ${Labels.symbols.required}`}
+                                                                //label={`${item.label} ${Labels.symbols.required}`}
                                                                 value={formData.actualDeliveryDate}
                                                                 onChange={handleChange}
                                                                 width={100}
                                                                 allowFuture
                                                             />
-                                                        )
-                                                            : (
-                                                                <>
-                                                                    <PGrid className={`ps-2 mb-4`}>
-                                                                        <PTypography
-                                                                            labelText={
-                                                                                <>
-                                                                                    {item.label}
-                                                                                    {(item.label === "D/O No or PO No" || item.label === "Actual Delivery Date") && (
-                                                                                        <span style={{ color: "red" }}>{" "}{Labels.symbols.required}</span>
-                                                                                    )}
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <PGrid className={`ps-2 mb-4`}>
+                                                                <PTypography
+                                                                    labelText={
+                                                                        <>
+                                                                            {item.label}
+                                                                            {(item.label === "D/O No or PO No" || item.label === "Actual Delivery Date") && (
+                                                                                <span style={{ color: "red" }}>{" "}{Labels.symbols.required}</span>
+                                                                            )}
 
-                                                                                </>
-                                                                            }
-                                                                            weight={FontWeight.bold}
-                                                                            flag={Labels.fontFlags.normalText}
-                                                                        />
-                                                                        <PTypography
-                                                                            labelText={item.value}
-                                                                            color={CommonColors.primary}
-                                                                            weight={FontWeight.regular}
-                                                                            flag={Labels.fontFlags.normalText}
-                                                                        />
-                                                                    </PGrid>
-                                                                </>
-                                                            )
+                                                                        </>
+                                                                    }
+                                                                    weight={FontWeight.bold}
+                                                                    flag={Labels.fontFlags.normalText}
+                                                                />
+                                                                <PTypography
+                                                                    labelText={item.value}
+                                                                    color={CommonColors.primary}
+                                                                    weight={FontWeight.regular}
+                                                                    flag={Labels.fontFlags.normalText}
+                                                                />
+                                                            </PGrid>
+                                                        </>
+                                                    )
                                                 }
                                             </PGrid>
                                         )

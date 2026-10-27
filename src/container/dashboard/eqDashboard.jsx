@@ -133,7 +133,8 @@ const EqDashboard = () => {
           date: item.serverTime,
           id: item.id,
           stepID: item.stepId,
-          clientId: item.clientId
+          clientId: item.clientId,
+          ponumber:item.ponumber,
         }));
         setRows(formattedRows);
         const formattedChartData = (data.summary?.jobStatus || []).map(
@@ -160,10 +161,25 @@ const EqDashboard = () => {
   const columns = [
     { field: "enquiryId", header: "Enquiry ID" },
     { field: "projectNumber", header: "Project Number" },
+    ...(userType?.toLowerCase() === Labels.userType.client
+      ? [{ field: "ponumber", header: "Do No" }]
+      : [{ field: "requestedDate", header: "Requested Date" }]),
     { field: "projectName", header: "Project Name" },
-    { field: "requestedDate", header: "Requested Date" },
     { field: "status", header: "Status" },
-    { field: "surveyStatus", header: "Survey Status" },
+    ...(userType?.toLowerCase() === Labels.userType.supplier
+      ? []
+      : [{field: "surveyStatus", header: "Survey Status",
+          renderCell: (params) =>
+            userType?.toLowerCase() === Labels.userType.client ? (
+              <PButton
+                variant="contained"
+                label={"Take Survey"}
+              />
+            ) : (
+              params.value
+            ),
+        },
+      ]),
   ];
 
   const agencyCards = {
@@ -396,8 +412,11 @@ const EqDashboard = () => {
 
   const layout = [
     { id: 'col-1', cards: cardData.slice(0, 1) },
-    { id: 'col-2', cards: cardData.slice(1, cardData.length - 1) },
-    { id: 'col-3', cards: cardData.slice(-1) },
+    {
+      id: 'col-2',
+      cards: cardData.length === 3 ? cardData.slice(1, 3) : cardData.slice(1, cardData.length - 1),
+    },
+    { id: 'col-3', cards: cardData.length === 3 ? [] : cardData.slice(-1) },
   ];
 
   const chartOptions = [
