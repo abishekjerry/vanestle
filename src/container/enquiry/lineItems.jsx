@@ -1001,9 +1001,8 @@ const LineItems = () => {
                         </PGrid>
                         <PGrid container className={Labels.margin.mb4}>
                             <PGrid item xs={12} sm={6} md={4}>
-                                <div className="adjustH27"><PTypography flag={Labels.fontSize.sm} labelText={`${getLabel("lbl75")}${Labels.symbols.optional}${Labels.symbols.required}`} /></div>
                                 <PDropdown
-                                    // label={`${getLabel("lbl75")}${Labels.symbols.required}${Labels.symbols.optional}`}
+                                    label={`${getLabel("lbl75")}${Labels.symbols.required}${Labels.symbols.optional}`}
                                     value={formData.containsPlastic}
                                     onChange={handleChange}
                                     helperText={errors?.containsPlastic}
@@ -1103,8 +1102,8 @@ const LineItems = () => {
                                 />
                             </PGrid>
                             <PGrid item xs={12} sm={6} md={4}>
-                                <div className="adjustH27"><PTypography flag={Labels.fontSize.sm} labelText={`${getLabel("lbl110")}${Labels.symbols.required}`} /></div>
                                 <PDropdown
+                                    label={`${getLabel("lbl110")}${Labels.symbols.required}`}
                                     value={formData.eAuction}
                                     onChange={handleChange}
                                     helperText={errors?.eAuction}
@@ -1500,7 +1499,7 @@ const LineItems = () => {
                                             weight={FontWeight.normal}
                                         />
                                         <PTypography
-                                            labelText={"Type: .pdf .png .jpg .jpeg .doc .docx .ppt .pptx .xls .xlsx"}
+                                            labelText={"Type: .pdf .png .jpg .jpeg .doc .docx .ppt .pptx .xls .xlsx .msg"}
                                             flag={Labels.fontFlags.smallText}
                                             color={CommonColors.primary}
                                             weight={FontWeight.normal}

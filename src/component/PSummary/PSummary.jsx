@@ -33,11 +33,12 @@ export const PSummary = ({ sections = [], currentStep = 3, refreshSummary, layou
     };
 
     const visibleSections = sections.filter((section) => section.step == currentStep);
-
+    const hybridModel = sections.find((section) => section.step === 2)?.items.find((item) => item.label === "Hybrid")?.value;
     const handleEdit = (step, enquiryId = null) => {
         const data = lineItems.find(item => item.enqdetailsId === enquiryId);
         if (step === 3 && data) {
-            handleOpen(data);
+            const updateData = {...data, hybrid : hybridModel};
+            handleOpen(updateData);
             return;
         }
         const routeMap = {

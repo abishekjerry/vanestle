@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TextField, IconButton, InputAdornment, Typography } from "@mui/material";
+import { TextField, IconButton, InputAdornment, Typography, Tooltip } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Labels } from "../../utils/constants/labels";
 import { FontFamily, FontSize } from "../../utils/constants/fonts";
@@ -41,7 +41,7 @@ export default function PTextField({
             backgroundColor: "#fff",
             "& fieldset": {
                 borderColor: helperText ? "#d32f2f" : "#ccc",
-            },  
+            },
             "&:hover fieldset": {
                 borderColor: "#16133F",
             },
@@ -50,21 +50,21 @@ export default function PTextField({
                 borderColor: "#16133F",
             },
         },
-        "& .MuiFormHelperText-root.Mui-error":{
-           marginLeft: 0,
+        "& .MuiFormHelperText-root.Mui-error": {
+            marginLeft: 0,
         },
         "& .MuiInputLabel-root": {
             fontFamily: FontFamily.bold,
             fontSize: FontSize.textField.label,
         },
-        "& .MuiOutlinedInput-input":{ 
-            height:"50px",
+        "& .MuiOutlinedInput-input": {
+            height: "50px",
             boxSizing: "border-box",
         },
         "& .MuiInputBase-input:-webkit-autofill": {
             WebkitBoxShadow: "0 0 0 1000px #ffffff inset",
             WebkitTextFillColor: "#171717",
-            caretColor:"#171717"
+            caretColor: "#171717"
         },
         "& .MuiInputLabel-shrink": {
             color: "#000000",
@@ -76,10 +76,13 @@ export default function PTextField({
     };
 
     return (
-         <>
-            <Typography style={{fontSize:"16px",color:"#171717",marginBottom:"8px"}}>
-                {label}
-            </Typography>
+        <>
+            <Tooltip title={label?.length > 30 ? label : ""} arrow placement="top">
+                <Typography style={{ fontSize: "16px", color: "#171717", marginBottom: "8px", cursor: label?.length > 30 ? "pointer" : "default", }}>
+                    {label?.length > 30 ? `${label.slice(0, 30)}...` : label}
+                </Typography>
+            </Tooltip>
+
             <TextField
                 placeholder={placeHolder}
                 name={name}
@@ -97,7 +100,7 @@ export default function PTextField({
                 helperText={helperText}
                 error={!!helperText}
                 variant={variant}
-                InputLabelProps={{ shrink: false,}}
+                InputLabelProps={{ shrink: false, }}
                 sx={baseSx}
                 inputProps={{ ...inputProps, min, max }}
                 InputProps={{

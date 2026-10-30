@@ -7,7 +7,8 @@ import {
   FormHelperText,
   Autocomplete,
   TextField,
-  Typography
+  Typography,
+  Tooltip
 } from "@mui/material";
 
 import { Labels } from "../../utils/constants/labels";
@@ -94,7 +95,7 @@ const PDropdown = ({ name = "", label, value = "", onChange, options = [], requi
 
       "& .MuiAutocomplete-popupIndicator": {
         pointerEvents: readOnly ? "none" : "auto",
-        cursor:  readOnly ? "default" : "pointer",
+        cursor: readOnly ? "default" : "pointer",
         opacity: readOnly ? 0.5 : 1,
       },
     },
@@ -148,9 +149,12 @@ const PDropdown = ({ name = "", label, value = "", onChange, options = [], requi
     return (
       <>
         {labelMode === "" && (
-          <Typography style={{ fontSize: "16px", color: "#171717", marginBottom: "8px",  whiteSpace: "nowrap",  }}>
-            {label}
-          </Typography>
+          <Tooltip title={label?.length > 30 ? label : ""} arrow placement="top">
+            <Typography style={{ fontSize: "16px", color: "#171717", marginBottom: "8px", whiteSpace: "nowrap", cursor: label?.length > 30 ? "pointer" : "default",}}>
+              {label?.length > 30 ? `${label.slice(0, 30)}...` : label}
+            </Typography>
+          </Tooltip>
+
         )}
         <Autocomplete
           options={options}
@@ -193,11 +197,13 @@ const PDropdown = ({ name = "", label, value = "", onChange, options = [], requi
       sx={baseSx}
       disabled={readOnly}
     >
-      {/* {labelMode === "" && ( <InputLabel style={{fontSize:"18px",color:"#171717",marginBottom:"8px"}} shrink={false}>{label}</InputLabel>)} */}
       {labelMode === "" && (
-        <Typography style={{ fontSize: "16px", color: "#171717", marginBottom: "8px" ,  whiteSpace: "nowrap"}}>
-          {label}
-        </Typography>
+        <Tooltip title={label?.length > 30 ? label : ""} arrow placement="top">
+          <Typography style={{ fontSize: "16px", color: "#171717", marginBottom: "8px", whiteSpace: "nowrap", cursor: label?.length > 30 ? "pointer" : "default", }}>
+            {label?.length > 30 ? `${label.slice(0, 30)}...` : label}
+          </Typography>
+        </Tooltip>
+
       )}
       <Select
         displayEmpty

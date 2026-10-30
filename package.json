@@ -16,6 +16,7 @@
     "@mui/material": "^7.3.8",
     "@mui/styles": "^6.5.0",
     "@mui/x-date-pickers": "^8.27.2",
+    "@npeersab/msgreader": "^5.2.0",
     "bootstrap": "^5.3.8",
     "dayjs": "^1.11.19",
     "flatpickr": "^4.6.13",

@@ -12,6 +12,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import PToast from './component/PToast/PToast'
 import { LanguageProvider } from "./utils/constants/language";
+import PScroll from "./component/PScroll/PScroll";
 const basename = window.location.hostname === "localhost" ? "/"
   : window.location.pathname.startsWith("/web/") ? "/web/virtualagency/VANestle4.0"
     : "/iweb/virtualagency/VANestle4.0";
@@ -23,6 +24,7 @@ root.render(
       <LanguageProvider>
         <PToast />
         <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <PScroll />
           <App />
         </LocalizationProvider>
       </LanguageProvider>

@@ -32,6 +32,8 @@ const UpdateLineItems = ({ open, onClose, data = {}, step, refreshSummary }) => 
         digitalInnovation: "",
         innovation: "",
         sourcingLocation: "",
+        savingsType: "",
+        savingsReason: "",
         noOfVersion: "",
         specifications: "",
         notesComments: ""
@@ -42,12 +44,17 @@ const UpdateLineItems = ({ open, onClose, data = {}, step, refreshSummary }) => 
         localCatalog: [],
         sourcingLocation: [],
         printingMethod: [],
+        savingsType: [],
+        savingsReason: [],
         yesNoNa: [{ label: "Yes", value: 1 }, { label: "No", value: 2 }, { label: "N/A", value: 3, selected: true }],
     });
 
     useEffect(() => {
         if (open && data?.printornonprint) {
             LineItemsMaster(data.printornonprint);
+        }
+        if (open && data?.savingstype) {
+            SavingsReasonMaster(data.savingstype);
         }
     }, [open, data]);
 
@@ -63,6 +70,7 @@ const UpdateLineItems = ({ open, onClose, data = {}, step, refreshSummary }) => 
                 globalOrder: response.globalOrder,
                 sourcingLocation: response.sourcingLocation,
                 printingMethod: response.printingMethod,
+                savingsType: response.savingsType,
             }));
             setFormData(prev => ({
                 ...prev,
@@ -77,8 +85,31 @@ const UpdateLineItems = ({ open, onClose, data = {}, step, refreshSummary }) => 
                 localCatalogueName: getOptionValue(response.localCatalog, data.catalogueUsage),
                 digitalInnovation: getOptionValue(formDataList.yesNoNa, data.digitalInnovation),
                 innovation: getOptionValue(formDataList.yesNoNa, data.innovation),
+                savingsType: getOptionValue(response.savingsType, data.savingstype),
                 quantity: data.quoteQtyOrSize,
                 enquiryId: data.enqdetailsId
+            }));
+        } catch (error) {
+            toast(Labels.status.failure, Labels.message.somethingWentWrong);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const SavingsReasonMaster = async (type) => {
+        try {
+            setLoading(true);
+            const response = await PostApi(LineItems_API.GetEnqLineItemsMaster, {
+                TypeOfJob: data.printornonprint,
+                Savingstype: type,
+            });
+            setFormDataList(prev => ({
+                ...prev,
+                savingsReason: response.savingsReason,
+            }));
+            setFormData(prev => ({
+                ...prev,
+                savingsReason: getOptionValue(response.savingsReason, data.savingsreason),
             }));
         } catch (error) {
             toast(Labels.status.failure, Labels.message.somethingWentWrong);
@@ -97,6 +128,8 @@ const UpdateLineItems = ({ open, onClose, data = {}, step, refreshSummary }) => 
         digitalInnovation: "",
         innovation: "",
         sourcingLocation: "",
+        savingsType: "",
+        savingsReason: "",
         noOfVersion: "",
         specifications: "",
         notesComments: ""
@@ -109,9 +142,16 @@ const UpdateLineItems = ({ open, onClose, data = {}, step, refreshSummary }) => 
 
     // ✅ Handle Change
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value, label } = e.target;
         const config = fieldConfig[name];
         const data = config?.type === "number" ? allowOnlyNumbers(value) : value;
+        switch (name) {
+            case Labels.lineItems.savingsType:
+                SavingsReasonMaster(label);
+                break;
+            default:
+                break;
+        }
         setFormData(prev => ({
             ...prev,
             [name]: data
@@ -175,7 +215,7 @@ const UpdateLineItems = ({ open, onClose, data = {}, step, refreshSummary }) => 
                     DigitalInnovation: getOptionLabel(formDataList.yesNoNa, formData.digitalInnovation),
                     Innovation: getOptionLabel(formDataList.yesNoNa, formData.innovation),
                     Sourcinglocation: getOptionLabel(formDataList.sourcingLocation, formData.sourcingLocation),
-                    harmonizedOrder  : formData.globalOrderWindowCatalogueName == 1 ? "No" : "Yes",
+                    harmonizedOrder: formData.globalOrderWindowCatalogueName == 1 ? "No" : "Yes",
                     Version: formData.noOfVersion,
                     SpecNote: formData.specifications,
                     SNote: formData.notesComments,
@@ -208,7 +248,7 @@ const UpdateLineItems = ({ open, onClose, data = {}, step, refreshSummary }) => 
             setAllowRedirect(false);
         }
     };
-
+    const showSavingsFields = true;
     {/*Update LineItems*/ }
     return (
         < PDialog
@@ -248,14 +288,14 @@ const UpdateLineItems = ({ open, onClose, data = {}, step, refreshSummary }) => 
 
         >
             <PGrid container className={Labels.margin.mb4}>
-                <PGrid item xs={12} sm={6} md={4} style={{paddingRight:"0"}}>
+                <PGrid item xs={12} sm={6} md={4} style={{ paddingRight: "0" }}>
                     <PTextField
                         label={`${getLabel("lbl66")}${Labels.symbols.required}`}
                         value={formData.itemName}
                         onChange={handleChange}
                         helperText={errors?.itemName}
                         name={Labels.lineItems.itemName}
-                        sx ={{mb : 3}}
+                        sx={{ mb: 3 }}
                     />
                     <PTextField
                         label={`${getLabel("lbl87")}${Labels.symbols.required}`}
@@ -278,7 +318,7 @@ const UpdateLineItems = ({ open, onClose, data = {}, step, refreshSummary }) => 
                 </PGrid>
             </PGrid>
             <PGrid container className={Labels.margin.mb4}>
-                <PGrid item xs={12} sm={6} md={4} style={{paddingRight:"0"}}>
+                <PGrid item xs={12} sm={6} md={4} style={{ paddingRight: "0" }}>
                     <PDropdown
                         label={`${getLabel("lbl107")}${Labels.symbols.required}`}
                         value={formData.globalOrderWindowCatalogueName}
@@ -290,7 +330,7 @@ const UpdateLineItems = ({ open, onClose, data = {}, step, refreshSummary }) => 
                         disabled={true}
                     />
                 </PGrid>
-                <PGrid item xs={12} sm={6} md={4} style={{paddingRight:"0"}}>
+                <PGrid item xs={12} sm={6} md={4} style={{ paddingRight: "0" }}>
                     <PDropdown
                         label={`${getLabel("lbl111")}${Labels.symbols.required}`}
                         value={formData.printingMethod}
@@ -316,7 +356,7 @@ const UpdateLineItems = ({ open, onClose, data = {}, step, refreshSummary }) => 
                 </PGrid>
             </PGrid>
             <PGrid container className={Labels.margin.mb4} >
-                <PGrid item xs={12} sm={6} md={4} style={{paddingRight:"0"}}>
+                <PGrid item xs={12} sm={6} md={4} style={{ paddingRight: "0" }}>
                     <PDropdown
                         label={`${getLabel("lbl114")}${Labels.symbols.required}`}
                         value={formData.digitalInnovation}
@@ -325,10 +365,10 @@ const UpdateLineItems = ({ open, onClose, data = {}, step, refreshSummary }) => 
                         name={Labels.lineItems.digitalInnovation}
                         options={formDataList.yesNoNa}
                         disabled={true}
-                        
+
                     />
                 </PGrid>
-                <PGrid item xs={12} sm={6} md={4} style={{paddingRight:"0"}}>
+                <PGrid item xs={12} sm={6} md={4} style={{ paddingRight: "0" }}>
                     <PDropdown
                         label={`${getLabel("lbl115")}${Labels.symbols.required}`}
                         value={formData.innovation}
@@ -353,7 +393,7 @@ const UpdateLineItems = ({ open, onClose, data = {}, step, refreshSummary }) => 
                 </PGrid>
             </PGrid>
             <PGrid container className={Labels.margin.mb3}>
-                <PGrid item xs={12} sm={6} md={4} style={{paddingRight:"0"}}>
+                <PGrid item xs={12} sm={6} md={4} style={{ paddingRight: "0" }}>
                     <PTextField
                         label={`${getLabel("lbl85")}${Labels.symbols.required}`}
                         value={formData.noOfVersion}
@@ -362,29 +402,89 @@ const UpdateLineItems = ({ open, onClose, data = {}, step, refreshSummary }) => 
                         name={Labels.lineItems.noOfVersion}
                     />
                 </PGrid>
-                <PGrid item xs={12} sm={6} md={4} style={{paddingRight:"0"}}>
-                    <PTextField
-                        label={`${getLabel("lbl83")}${Labels.symbols.required}`}
-                        value={formData.specifications}
-                        onChange={handleChange}
-                        helperText={errors?.specifications}
-                        name={Labels.lineItems.specifications}
-                        multiline={true}
-                        rows={2.5}
-                    />
-                </PGrid>
-                <PGrid item xs={12} sm={6} md={4}>
-                    <PTextField
-                        label={`${getLabel("lbl86")}`}
-                        value={formData.notesComments}
-                        onChange={handleChange}
-                        //helperText={errors?.notesComments}
-                        name={Labels.lineItems.notesComments}
-                        multiline={true}
-                        rows={2.5}
-                    />
-                </PGrid>
+
+                {["Yes"].includes(data?.hybrid) && (
+                    <>
+                        <PGrid item xs={12} sm={6} md={4}>
+                            <PDropdown
+                                label={`${getLabel("lbl117")}${Labels.symbols.required}`}
+                                value={formData.savingsType}
+                                onChange={handleChange}
+                                helperText={errors?.savingsType}
+                                name={Labels.lineItems.savingsType}
+                                options={formDataList.savingsType}
+                                flag={Labels.flag.auto}
+                            />
+                        </PGrid>
+
+                        <PGrid item xs={12} sm={6} md={4}>
+                            <PDropdown
+                                label={`${getLabel("lbl118")}${Labels.symbols.required}`}
+                                value={formData.savingsReason}
+                                onChange={handleChange}
+                                helperText={errors?.savingsReason}
+                                name={Labels.lineItems.savingsReason}
+                                options={formDataList.savingsReason}
+                                flag={Labels.flag.auto}
+                            />
+                        </PGrid>
+                    </>
+                )}
+
+                {["No"].includes(data?.hybrid) && (
+                    <>
+                        <PGrid item xs={12} sm={6} md={4} style={{ paddingRight: "0" }}>
+                            <PTextField
+                                label={`${getLabel("lbl83")}${Labels.symbols.required}`}
+                                value={formData.specifications}
+                                onChange={handleChange}
+                                helperText={errors?.specifications}
+                                name={Labels.lineItems.specifications}
+                                multiline={true}
+                                rows={2.5}
+                            />
+                        </PGrid>
+
+                        <PGrid item xs={12} sm={6} md={4}>
+                            <PTextField
+                                label={getLabel("lbl86")}
+                                value={formData.notesComments}
+                                onChange={handleChange}
+                                name={Labels.lineItems.notesComments}
+                                multiline={true}
+                                rows={2.5}
+                            />
+                        </PGrid>
+                    </>
+                )}
             </PGrid>
+
+            {["Yes"].includes(data?.hybrid) && (
+                <PGrid container className={Labels.margin.mb3}>
+                    <PGrid item xs={12} sm={6} md={4} style={{ paddingRight: "0" }}>
+                        <PTextField
+                            label={`${getLabel("lbl83")}${Labels.symbols.required}`}
+                            value={formData.specifications}
+                            onChange={handleChange}
+                            helperText={errors?.specifications}
+                            name={Labels.lineItems.specifications}
+                            multiline={true}
+                            rows={2.5}
+                        />
+                    </PGrid>
+
+                    <PGrid item xs={12} sm={6} md={4}>
+                        <PTextField
+                            label={getLabel("lbl86")}
+                            value={formData.notesComments}
+                            onChange={handleChange}
+                            name={Labels.lineItems.notesComments}
+                            multiline={true}
+                            rows={2.5}
+                        />
+                    </PGrid>
+                </PGrid>
+            )}
         </PDialog >
 
     );

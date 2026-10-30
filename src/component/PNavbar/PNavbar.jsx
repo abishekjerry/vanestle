@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   AppBar,
   Toolbar,
   Box,
   IconButton,
   Badge,
-  Avatar,
   Typography,
   Paper,
   Menu,
@@ -17,13 +16,8 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { Language } from "@mui/icons-material";
 import { Labels } from "../../utils/constants/labels";
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import Logo from "../../utils/assets/Navbar/Logo.svg";
 import VALogo from "../../utils/assets/images/valogo.svg";
 import { labelRoutes } from "../../navigations/labelRoutes";
-import PTypography from "../PTypography/PTypography";
-import { FaBars } from "react-icons/fa";
-import { FontWeight } from "../../utils/constants/fonts";
-import { CommonColors } from "../../utils/constants/colors";
 import { useLanguage } from "../../utils/constants/language";
 import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined';
 import { userDetails } from "../../redux/actionType/actionType";

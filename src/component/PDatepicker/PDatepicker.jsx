@@ -6,8 +6,8 @@ import "flatpickr/dist/flatpickr.min.css";
 import { FormControlBaseStyle } from "../../utils/constants/styles";
 
 export default function PDatepicker({ label = "", value = "", onChange, width, helperText = "", disabled = false, name = ""
-  , inputRef, placeholder = "DD-MM-YYYY", mt = 0.4, allowFuture = false, minDate = null, maxDate = null }) {
-    
+  , inputRef, placeholder = "DD/MM/YYYY", mt = 0.4, allowFuture = false, minDate = null, maxDate = null }) {
+
   const internalRef = useRef(null);
   const textFieldRef = inputRef || internalRef;
   const flatpickrRef = useRef(null);
@@ -17,7 +17,7 @@ export default function PDatepicker({ label = "", value = "", onChange, width, h
 
     flatpickrRef.current = flatpickr(textFieldRef.current, {
       disableMobile: true,
-      dateFormat: "d-m-Y",
+      dateFormat: "d/m/Y",
       defaultDate: value || null,
       allowInput: true,
       minDate: minDate || null,
@@ -61,18 +61,19 @@ export default function PDatepicker({ label = "", value = "", onChange, width, h
   const handleInput = (e) => {
     let value = e.target.value.replace(/\D/g, "");
 
-    if (value.length > 2) value = value.slice(0, 2) + "-" + value.slice(2);
-    if (value.length > 5) value = value.slice(0, 5) + "-" + value.slice(5);
+    if (value.length > 2) value = value.slice(0, 2) + "/" + value.slice(2);
+    if (value.length > 5) value = value.slice(0, 5) + "/" + value.slice(5);
     if (value.length > 10) value = value.slice(0, 10);
 
     e.target.value = value;
 
     if (value.length === 10) {
-      const [day, month, year] = value.split("-");
-      const enteredDate = new Date(`${year}/${month}/${day}`);
+      const [day, month, year] = value.split("/");
+      const enteredDate = new Date(`${year}-${month}-${day}`);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      // Block future if flag is false
+
+      // Block future dates if allowFuture is false
       if (!allowFuture && enteredDate > today) {
         e.target.value = "";
       }
@@ -89,7 +90,6 @@ export default function PDatepicker({ label = "", value = "", onChange, width, h
   };
 
   const baseSx = FormControlBaseStyle(width, mt);
-
   return (
     <>
       <Typography style={{ fontSize: "16px", color: "#171717", marginBottom: "8px" }}>

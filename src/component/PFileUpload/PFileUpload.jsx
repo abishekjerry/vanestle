@@ -1,34 +1,10 @@
-import React, { useEffect, useState } from "react";
-
-import {
-    TextField,
-    IconButton,
-    Tooltip,
-    InputAdornment
-} from "@mui/material";
-
-import {
-    UploadFile as UploadFileIcon,
-    InsertDriveFile as InsertDriveFileIcon
-} from "@mui/icons-material";
-
+import { useEffect, useState } from "react";
+import {TextField, InputAdornment} from "@mui/material";
+import {UploadFile as UploadFileIcon } from "@mui/icons-material";
 import { FontFamily, FontSize } from "../../utils/constants/fonts";
 
-export default function PFileUpload({
-    label = "",
-    value = [],
-    onChange,
-    disabled = false,
-    name = "",
-    helperText = "",
-    variant = "outlined",
-    multiple = false,
-    // multiline= false,
-    // rows = 1,
-    maxLength = 5,
-    width = "100%",
-    placeholder = ""
-}) {
+export default function PFileUpload({ label = "", value = [], onChange, disabled = false, name = "", helperText = "",
+    variant = "outlined", multiple = false, maxLength = 5, width = "100%", placeholder = "" }) {
 
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [fileError, setFileError] = useState("");
@@ -36,7 +12,7 @@ export default function PFileUpload({
     const allowedExtensions = [
         "pdf", "png", "jpg", "jpeg",
         "doc", "docx", "ppt", "pptx",
-        "xls", "xlsx"
+        "xls", "xlsx", "msg"
     ];
 
     useEffect(() => {
@@ -72,10 +48,10 @@ export default function PFileUpload({
                 break;
             }
 
-            updatedFiles.push({ name: file.name, file, url: URL.createObjectURL(file), size: file.size});
+            updatedFiles.push({ name: file.name, file, url: URL.createObjectURL(file), size: file.size });
         }
         setSelectedFiles(updatedFiles);
-        onChange?.({ target: { name, files: updatedFiles }});
+        onChange?.({ target: { name, files: updatedFiles } });
         setFileError(errorMsg);
         e.target.value = "";
     };
@@ -103,18 +79,10 @@ export default function PFileUpload({
             error={!!fileError}
             variant={variant}
             fullWidth
-            //multiline={multiline}
             inputProps={{ readOnly: true }}
             sx={baseSx}
-            //rows = {rows}
-            placeholder= {placeholder}
+            placeholder={placeholder}
             InputProps={{
-                // startAdornment: (
-                //     <InputAdornment position="start">
-                //         <UploadFileIcon />
-                //     </InputAdornment>
-                // ),
-
                 endAdornment: (
                     <InputAdornment position="end">
                         <input
@@ -124,17 +92,10 @@ export default function PFileUpload({
                             disabled={disabled}
                             onChange={handleFileChange}
                             id={`upload-${name}`}
-                            accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
+                            accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.msg"
                         />
 
-                        <label style={{cursor:"pointer"}} htmlFor={`upload-${name}`}><UploadFileIcon />
-                            {/* <Tooltip title="Upload">
-                                <IconButton component="span">
-                                    <UploadFileIcon />
-                                </IconButton>
-                            </Tooltip> */}
-                        </label>
-
+                        <label style={{ cursor: "pointer" }} htmlFor={`upload-${name}`}><UploadFileIcon /> </label>
                     </InputAdornment>
                 )
             }}

@@ -134,7 +134,7 @@ const EqDashboard = () => {
           id: item.id,
           stepID: item.stepId,
           clientId: item.clientId,
-          ponumber:item.ponumber,
+          ponumber: item.ponumber,
         }));
         setRows(formattedRows);
         const formattedChartData = (data.summary?.jobStatus || []).map(
@@ -168,25 +168,26 @@ const EqDashboard = () => {
     { field: "status", header: "Status" },
     ...(userType?.toLowerCase() === Labels.userType.supplier
       ? []
-      : [{field: "surveyStatus", header: "Survey Status",
-          renderCell: (params) =>
-            userType?.toLowerCase() === Labels.userType.client ? (
-              <PButton
-                variant="contained"
-                label={"Take Survey"}
-              />
-            ) : (
-              params.value
-            ),
-        },
-      ]),
+      : [{
+        field: "surveyStatus", header: "Survey Status",
+        renderCell: (params) =>
+          userType?.toLowerCase() === Labels.userType.client ? (
+            <PButton
+              variant="contained"
+              label={"Take Survey"}
+            />
+          ) : (
+            params.value
+          ),
+      },]
+    ),
   ];
 
   const agencyCards = {
     1: [
       {
         title: getLabel("lbl13"),
-        value: summary.approval || 0,
+        value: summary.approval,
         subtitle: getLabel("lbl17"),
         iconColor: Labels.primary,
         icon: <PendingActionsIcon />,
@@ -197,7 +198,7 @@ const EqDashboard = () => {
       },
       {
         title: getLabel("lbl14"),
-        value: summary.awarded || 0,
+        value: summary.awarded,
         subtitle: getLabel("lbl18"),
         iconColor: Labels.primary,
         icon: <EmojiEventsIcon />,
@@ -208,7 +209,7 @@ const EqDashboard = () => {
       },
       {
         title: getLabel("lbl12"),
-        value: summary.active || 0,
+        value: summary.active,
         subtitle: getLabel("lbl16"),
         iconColor: Labels.primary,
         icon: <AssignmentIcon />,
@@ -219,7 +220,7 @@ const EqDashboard = () => {
       },
       {
         title: getLabel("lbl15"),
-        value: summary.completed || 0,
+        value: summary.completed,
         subtitle: getLabel("lbl18"),
         iconColor: Labels.primary,
         icon: <TaskAltIcon />,
@@ -272,7 +273,7 @@ const EqDashboard = () => {
     3: [
       {
         title: getLabel("lbl13"),
-        value: summary.approval || 0,
+        value: summary.approval,
         subtitle: getLabel("lbl17"),
         iconColor: Labels.primary,
         icon: <MoveToInboxOutlinedIcon />,
@@ -283,7 +284,7 @@ const EqDashboard = () => {
       },
       {
         title: getLabel("lbl12"),
-        value: summary.active || 0,
+        value: summary.active,
         subtitle: getLabel("lbl16"),
         iconColor: Labels.primary,
         icon: <OutboxOutlinedIcon />,
@@ -294,7 +295,7 @@ const EqDashboard = () => {
       },
       {
         title: getLabel("lbl14"),
-        value: summary.awarded || 0,
+        value: summary.awarded,
         subtitle: getLabel("lbl18"),
         iconColor: Labels.primary,
         icon: <PrintOutlinedIcon />,
@@ -309,7 +310,7 @@ const EqDashboard = () => {
   const supplierCards = [
     {
       title: getLabel("lbl207"),
-      value: summary.quoteproposed || 0,
+      value: summary.newrfq,
       subtitle: getLabel("lbl218"),
       iconColor: Labels.primary,
       icon: <LocalOfferIcon />,
@@ -320,7 +321,7 @@ const EqDashboard = () => {
     },
     {
       title: getLabel("lbl208"),
-      value: summary.newrfq || 0,
+      value: summary.quoteproposed,
       subtitle: getLabel("lbl219"),
       iconColor: Labels.primary,
       icon: <MoveToInboxIcon />,
@@ -331,7 +332,7 @@ const EqDashboard = () => {
     },
     {
       title: getLabel("lbl209"),
-      value: summary.invites || 0,
+      value: summary.invites,
       subtitle: getLabel("lbl220"),
       iconColor: Labels.primary,
       icon: <Inventory2Icon />,
@@ -345,7 +346,7 @@ const EqDashboard = () => {
   const clientCards = [
     {
       title: getLabel("lbl13"),
-      value: summary.forapproval || 0,
+      value: summary.forapproval,
       subtitle: getLabel("lbl17"),
       iconColor: Labels.primary,
       icon: <EditIcon />,
@@ -356,7 +357,7 @@ const EqDashboard = () => {
     },
     {
       title: getLabel("lbl210"),
-      value: summary.artwork || 0,
+      value: summary.artwork,
       subtitle: getLabel("lbl213"),
       iconColor: Labels.primary,
       icon: <ImageIcon />,
@@ -367,7 +368,7 @@ const EqDashboard = () => {
     },
     {
       title: getLabel("lbl211"),
-      value: summary.proof || 0,
+      value: summary.proof,
       subtitle: getLabel("lbl214"),
       iconColor: Labels.primary,
       icon: <VisibilityIcon />,
@@ -378,7 +379,7 @@ const EqDashboard = () => {
     },
     {
       title: getLabel("lbl212"),
-      value: summary.production || 0,
+      value: summary.production,
       subtitle: getLabel("lbl221"),
       iconColor: Labels.primary,
       icon: <HourglassEmptyIcon />,
@@ -389,7 +390,7 @@ const EqDashboard = () => {
     },
     {
       title: getLabel("lbl15"),
-      value: summary.completed || 0,
+      value: summary.completed,
       subtitle: getLabel("lbl222"),
       iconColor: Labels.primary,
       icon: <AssignmentTurnedInIcon />,
@@ -630,6 +631,12 @@ const EqDashboard = () => {
     3: getLabel("lbl224"),
   }[menuId];
 
+  const title = {
+    1: getLabel("lbl03"),
+    2: getLabel("lbl04"),
+    3: getLabel("lbl05"),
+  }[menuId];
+
   const icons = [
     { icon: <AddTaskRoundedIcon color="green" />, tooltip: eProcurement, action: handleRedirect },
     { icon: <ImportExportOutlinedIcon fontSize="large" />, tooltip: "Export", action: handleExport },
@@ -664,7 +671,7 @@ const EqDashboard = () => {
       <Box sx={{ py: 3 }}>
         <PGrid item xs={12} sm={6} md={7} style={{ paddingBottom: "30px" }}>
           <PTypography
-            labelText={[Labels.userType.client].includes(userType?.toLowerCase()) ? "Project Hub" : `${getLabel("lbl03")}`}
+            labelText={[Labels.userType.client].includes(userType?.toLowerCase()) ? "Project Hub" : `${title}`}
             weight={FontWeight.regular}
             flag={"big"}
             style={{ fontFamily: "'Montserrat', Tahoma, Geneva, Verdana, sans-serif", }}
@@ -674,14 +681,7 @@ const EqDashboard = () => {
         <PGrid container className={`eqdashboard-wrapper ${Labels.margin.mb3}`}>
           {layout.map((col, index) => (
             <PGrid key={col.id} item xs={12} md={mdSizes[index]} lg={lgSizes[index]}>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  height: "100%",
-                  gap: "16px",
-                }}
-              >
+              <div style={{ display: "flex", flexDirection: "column", height: "100%", gap: "16px", }}>
                 {loading
                   ? col.cards.map((card, cardIndex) => (
                     <Skeleton
@@ -703,7 +703,7 @@ const EqDashboard = () => {
           ))}
         </PGrid>
 
-        {[Labels.role.admin].includes(userType?.toLowerCase()) && (
+        {[Labels.userType.agency].includes(userType?.toLowerCase()) && (
           <>
             {loading ? (
               <Skeleton variant="rectangular" height={50} sx={{ borderRadius: 2 }} />
@@ -784,7 +784,6 @@ const EqDashboard = () => {
                     labelMode="inside"
                   />
                 </PGrid>
-
               )}
 
               <PGrid item xs={12} sm={6} md={4} style={{ display: "flex" }}>

@@ -189,7 +189,7 @@ const EnquiryDetails = () => {
                 dispatch({
                     type: userDetails,
                     payload: {
-                        enquiryId: data?.enqClientinfo?.enqUId,
+                        enquiryId: data?.enqClientinfo?.enqUId, 
                     },
                 });
             }

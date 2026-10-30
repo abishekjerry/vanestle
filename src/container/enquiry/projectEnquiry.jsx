@@ -496,6 +496,10 @@ const ProjectEnquiry = () => {
                         ...prev,
                         selectedSupplierRows: [],
                     }));
+                    setFormData(prev => ({
+                        ...prev,
+                        activeTab: "Project Savings",
+                    }))
                 }
             } catch (error) {
                 toast(Labels.status.failure, Labels.message.somethingWentWrong);
@@ -640,7 +644,8 @@ const ProjectEnquiry = () => {
                     value={row[field]}
                     onChange={(e) =>
                         handleProjectInputChange((field === "baselineQuantity" || field === "previousPrice")
-                            ? e.target.value.replace(/[^0-9.]/g, "") : e.target.value,
+                            ? e.target.value.replace(/[^0-9.]/g, "").replace(/(\..*)\./g, "$1")
+                                .replace(/^(\d*\.\d{0,2}).*$/, "$1") : e.target.value,
                             row.id, row.enquiryId, field
                         )}
                     width={100}
@@ -798,7 +803,8 @@ const ProjectEnquiry = () => {
             <PTextField
                 name={field}
                 value={row[field] == null || row[field] === 0 ? "" : row[field]}
-                onChange={(e) => handleInputChange(e.target.value.replace(/[^0-9.]/g, ""), row.supplierQuotesId, row.enquiryId, field)}
+                onChange={(e) => handleInputChange(e.target.value.replace(/[^0-9.]/g, "").replace(/(\..*)\./g, "$1")
+                    .replace(/^(\d*\.\d{0,2}).*$/, "$1"), row.supplierQuotesId, row.enquiryId, field)}
                 width={100}
                 sx={{
                     "& .MuiInputBase-root": {
@@ -1325,7 +1331,7 @@ const ProjectEnquiry = () => {
                     </PGrid>
                 )}
 
-                {[false].includes(createOrderFlag) && flag  && (
+                {[false].includes(createOrderFlag) && flag && [6, 7].includes(formData.statusId) && (
                     <PGrid container className={Labels.margin.mb3}>
                         <PGrid item xs={12} md={12} sm={8}>
                             <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 2, flexWrap: "wrap" }}>
@@ -1435,7 +1441,7 @@ const ProjectEnquiry = () => {
                                                                                 <PostAddIcon />
                                                                             </IconButton>
                                                                         </Tooltip> */}
-                                                                         <Tooltip title={"Create Order"} arrow >
+                                                                        <Tooltip title={"Create Order"} arrow >
                                                                             <IconButton sx={iconStyle}
                                                                                 onClick={(e) => handleSubmit(e, "order")}
                                                                                 disabled={!createOrderFlag && !formData.poNo}
@@ -1656,8 +1662,7 @@ const ProjectEnquiry = () => {
                         </PGrid>
                         <Divider sx={{ mb: 2 }} />
                         <PGrid container className={Labels.margin.mb3}>
-                            <PGrid item xs={12} sm={6} md={2} className={Labels.margin.mt3}>
-                                {/* <PGrid className={`ps-2 mb-4`}> */}
+                            <PGrid item xs={12} sm={6} md={3} className={Labels.margin.mt3}>
                                 <PTypography
                                     labelText={`${getLabel("lbl168")} ( ${(Labels.symbols.percent)} ) : `}
                                     weight={FontWeight.bold}
@@ -1665,7 +1670,7 @@ const ProjectEnquiry = () => {
                             </PGrid>
 
                             {formData.fee ? (
-                                <PGrid item xs={12} sm={6} md={2}>
+                                <PGrid item xs={12} sm={6} md={1}>
                                     <PTextField
                                         name="managementFee"
                                         value={formData.managementFee}
@@ -1673,7 +1678,7 @@ const ProjectEnquiry = () => {
                                     />
                                 </PGrid>
                             ) : (
-                                <PGrid item xs={12} sm={6} md={2} className={Labels.margin.mt3}>
+                                <PGrid item xs={12} sm={6} md={1} className={Labels.margin.mt3}>
                                     <PTypography
                                         labelText={formData.managementFee}
                                         color={CommonColors.grey.main}
@@ -1788,7 +1793,7 @@ const ProjectEnquiry = () => {
                                     <PButton
                                         label={getLabel("lbl174")}
                                         variant="contained"
-                                        color={CommonColors.dark_blue}
+                                        color={CommonColors.red.dark}
                                         onClick={(e) => handleCalculate(e, "reCalculate")}
                                         width={400}
                                         startIcon={<img src={arrow} alt="arrow" className="icon" />}

@@ -124,7 +124,9 @@ const Suppliers = () => {
     // Search filter
     if (search.trim() !== "") {
         filteredData = filteredData.filter((item) =>
-            item.suppliername.toLowerCase().includes(search.toLowerCase())
+            item.suppliername.toLowerCase().includes(search.toLowerCase()) ||
+            // item.country.toLowerCase().includes(search.toLowerCase())  ||
+            item.suppliercode.toLowerCase().includes(search.toLowerCase())
         );
     }
     const data = filteredData;
@@ -220,9 +222,10 @@ const Suppliers = () => {
                                 weight={FontWeight.regular}
                             />
                         </PGrid>
+
                         <PGrid container className={Labels.margin.mb4}>
                             <PGrid item xs={12} sm={6} md={6} style={{ marginTop: "1.5rem" }}>
-                                <PSearch style={{ marginTop: "0rem" }} width="100%" placeholder={"Search a Suplier Name"} onChange={(e) => setSearch(e.target.value)} />
+                                <PSearch style={{ marginTop: "0rem" }} width="100%" placeholder={"Search by Supplier Name or Supplier Code"} onChange={(e) => setSearch(e.target.value)} />
                             </PGrid>
                             <PGrid item xs={12} sm={6} md={3}>
                                 <PDropdown
@@ -245,6 +248,7 @@ const Suppliers = () => {
                                 />
                             </PGrid>
                         </PGrid>
+
                         <PGrid container>
                             <PGrid item xs={12} sm={6} md={12} className="d-flex align-items-center gap-2">
                                 <Checkbox
@@ -268,7 +272,7 @@ const Suppliers = () => {
                                 <PTable columns={tableHeader} rows={data} showCheckbox={true} isChecked={showSelected} onValidationChange={handleValidationChange} selectedRows={formDataList.selectedRows} />
                             </PGrid>
                         </PGrid>
-                        
+
                         {!isValidation && (
                             <PGrid container className={Labels.margin.mb4}>
                                 <PGrid item xs={12}>
@@ -291,13 +295,7 @@ const Suppliers = () => {
                                     width={200}
                                 />
                             </PGrid>
-                            <PGrid
-                                item
-                                xs={12}
-                                sm={6}
-                                md={4}
-                                className="d-flex justify-content-end gap-2"
-                            >
+                            <PGrid item xs={12} sm={6} md={4} className="d-flex justify-content-end gap-2">
                                 <PButton
                                     label={getLabel("lbl38")}
                                     variant="outlined"
@@ -311,13 +309,7 @@ const Suppliers = () => {
                                     color={CommonColors.dark_blue}
                                     onClick={(e) => handleSubmit(e, true)}
                                     width={180}
-                                    startIcon={
-                                        <img
-                                            src={arrow}
-                                            alt="arrow"
-                                            className="icon"
-                                        />
-                                    }
+                                    startIcon={<img src={arrow} alt="arrow" className="icon" />}
                                 />
                             </PGrid>
                         </PGrid>

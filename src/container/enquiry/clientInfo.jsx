@@ -561,6 +561,7 @@ const ClientInfo = () => {
                                 />
                             </PGrid>
                         </PGrid>
+
                         <PGrid container className={Labels.margin.mb4}>
                             <PGrid item xs={12} sm={6} md={4}>
                                 <PTypography
@@ -664,21 +665,34 @@ const ClientInfo = () => {
                         {/* Row 3 */}
                         <PGrid container className={Labels.margin.mb4}>
                             <PGrid item xs={12} sm={6} md={6}>
-                                {/* <PTypography
-                                        labelText={`${getLabel("lbl91")}${Labels.symbols.required}`}
-                                        weight={FontWeight.regular}
-                                        marginBottom="8px"
-                                    /> */}
-                                <PDropdown
-                                    name={Labels.clientInfo.globalBUMapping}
-                                    label={`${getLabel("lbl91")}${Labels.symbols.required}`}
-                                    value={formData.globalBUMapping}
-                                    onChange={handleChange}
-                                    options={formDataList.globalBUMapping}
-                                    width={100}
-                                    helperText={errors?.globalBUMapping}
-                                    flag={Labels.flag.auto}
-                                />
+                                {/* {formDataList.globalBUMapping.length === 1 ? (
+                                    <>
+                                        <PTypography
+                                            labelText={getLabel("lbl91")}
+                                            weight={FontWeight.regular}
+                                            marginBottom="8px"
+                                            flag={Labels.fontFlags.normalText}
+                                        />
+                                        <PTypography
+                                            labelText={fields.businessUnit}
+                                            color={CommonColors.primary}
+                                            weight={FontWeight.regular}
+                                            flag={Labels.fontFlags.normalText}
+                                        />
+                                    </>
+
+                                ) : ( */}
+                                    <PDropdown
+                                        name={Labels.clientInfo.globalBUMapping}
+                                        label={`${getLabel("lbl91")}${Labels.symbols.required}`}
+                                        value={formData.globalBUMapping}
+                                        onChange={handleChange}
+                                        options={formDataList.globalBUMapping}
+                                        width={100}
+                                        helperText={errors?.globalBUMapping}
+                                        flag={Labels.flag.auto}
+                                    />
+                                {/* )} */}
                             </PGrid>
                             <PGrid item xs={12} sm={6} md={6}>
                                 <PRadio
